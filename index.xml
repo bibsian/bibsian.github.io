@@ -6,10 +6,20 @@
     <description>Recent content on Andrew Bibian</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 06 Nov 2019 19:53:23 -0800</lastBuildDate>
+    <lastBuildDate>Sun, 10 Nov 2019 20:37:19 -0800</lastBuildDate>
     
 	<atom:link href="https://bibsian.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Configuring the Jetson Nano</title>
+      <link>https://bibsian.github.io/posts/jetson-setup/</link>
+      <pubDate>Sun, 10 Nov 2019 20:37:19 -0800</pubDate>
+      
+      <guid>https://bibsian.github.io/posts/jetson-setup/</guid>
+      <description>Background If you&amp;rsquo;ve never heard of Nvidia&amp;rsquo;s Jetson Nano you can think of it as a Raspberry Pi with a built-in GPU; their developer community page has some pretty interesting projects if you&amp;rsquo;d like to learn more.
+Now, you&amp;rsquo;re only going to get some milage out of the rest of this post if you&amp;rsquo;ve already setup your Jetson Nano hardware. I set mine up to use the barrel jack for a power source, added a wifi card to the board, and connected it to the Raspberry Pi camera (to collect training data and use for real-time inference).</description>
+    </item>
     
     <item>
       <title>About Me</title>
