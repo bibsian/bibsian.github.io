@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.59.1" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Running Jupyter Notebooks on the Jetson Nano (via https) &middot; Andrew Bibian</title>
+  <meta name="description" content="" />
+
+  
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/hyde.css">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/all.css">
+  <script defer src="https://bibsian.github.io/js/all.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class="theme-base-08 ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      
+      <a href="https://bibsian.github.io/"><h1>Andrew Bibian</h1></a>
+      <p class="lead">
+       This is my notebook for all things Data Science 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://bibsian.github.io/">Home</a> </li>
+        <li><a href="https://github.com/bibsian/">
+	    
+	      <i class="fab fa-github"></i>
+	    
+	  Github
+	</a></li><li><a href="https://www.linkedin.com/in/andrewjamesbibian/">
+	    
+	      <i class="fab fa-linkedin"></i>
+	    
+	  LinkedIn
+	</a></li>
+      </ul>
+    </nav>
+
+    <p>&copy; 2019. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Running Jupyter Notebooks on the Jetson Nano (via https)</h1>
+  <time datetime=2019-11-17T13:44:36-0800 class="post-date">Sun, Nov 17, 2019</time>
+  
+
+<p>Today we&rsquo;re going to setup a Jupyter notebook environment
+so we can connect to our Nano over https. Note, this same logic could easily
+be applied to a server in the cloud.</p>
+
+<h2 id="prereqs">Prereqs</h2>
+
+<ol>
+<li><p>You will be doing this for <strong>Python3</strong></p></li>
+
+<li><p>You already have your <strong>default python3 configured for virtualenvs</strong></p></li>
+
+<li><p><strong>You have created a virtualenv</strong> that we&rsquo;ll install the Jupyter &amp; the
+Ipython kernel on.</p></li>
+
+<li><p>We&rsquo;re <strong>doing this setup while we are <code>ssh</code>ed into the Nano</strong> (<code>ssh &lt;jetson name&gt;@&lt;jetson_ip&gt;</code>)</p></li>
+</ol>
+
+<p>If you haven&rsquo;t completed any of the prereqs you can see my <a href="https://bibsian.github.io/posts/jetson-setup/">previous post</a>
+on setuping a virtual environment with Pytorch.</p>
+
+<h2 id="the-install-source-code-https-github-com-bibsian-joys-of-jetson-blob-master-jupyter-venv-setup-sh">The Install (<a href="https://github.com/bibsian/joys-of-jetson/blob/master/jupyter-venv-setup.sh">source code</a>)</h2>
+
+<p>Rather than just paste a whole bash script I&rsquo;ll elaborate on
+it piece by piece for clarity. Also, my bash script in the
+source code is slightly different and will require executating it from
+within a clone of my <a href="https://github.com/bibsian/joys-of-jetson">joys-of-jetson</a> repo to work properly.</p>
+
+<h3 id="activating-the-virutal-enviroment">Activating the virutal enviroment</h3>
+
+<p>First thing you need to do is activate the virtualenv
+you&rsquo;ll use to install jupyter, ipython, and some packages that matplot lib requires
+(with another package for parsing json from the shell).</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#408080;font-style:italic"># VENV you&#39;re using to install with</span>
+<span style="color:#19177c">VENV</span><span style="color:#666">=</span>pytorch <span style="color:#408080;font-style:italic"># my virtualenv</span>
+
+workon <span style="color:#19177c">$VENV</span> <span style="color:#666">&amp;&amp;</span> <span style="color:#008000">echo</span> <span style="color:#ba2121">&#34;Working on </span><span style="color:#19177c">$VENV</span><span style="color:#ba2121"> virtual environment&#34;</span>
+
+<span style="color:#008000">echo</span> <span style="color:#ba2121">&#39;Installing dependencies for matplotlib &amp; json parsing in bash&#39;</span>
+sudo apt update <span style="color:#b62;font-weight:bold">\
+</span><span style="color:#b62;font-weight:bold"></span><span style="color:#666">&amp;&amp;</span> sudo apt install -y libfreetype6-dev pkg-config libpng-dev jq
+
+<span style="color:#008000">echo</span> <span style="color:#ba2121">&#39;Pip installing jupyter, matplotlib, ipython kernal&#39;</span>
+<span style="color:#008000">echo</span> <span style="color:#ba2121">&#34;which pip3 == </span><span style="color:#008000;font-weight:bold">$(</span>which pip3<span style="color:#008000;font-weight:bold">)</span><span style="color:#ba2121">&#34;</span>
+pip3 install jupyter matplotlib ipykernel</code></pre></div>
+<h3 id="creating-https-certificates">Creating https certificates</h3>
+
+<p>Next, you&rsquo;ll need to create some certificate files for https authentication.
+I posted the link to a git issue that came up while installing;
+the openssl command below is different from the <a href="https://jupyter-notebook.readthedocs.io/en/stable/public_server.html">ipython docs</a>
+because of git issue so feel free to read about it there.</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#008000">cd</span> <span style="color:#19177c">$HOME</span>
+mkdir certs
+<span style="color:#008000">echo</span> <span style="color:#ba2121">&#34;Certificat directory at </span><span style="color:#19177c">$HOME</span><span style="color:#ba2121">/certs&#34;</span>
+<span style="color:#008000">cd</span> certs
+<span style="color:#008000">echo</span> <span style="color:#ba2121">&#34;Configuring openssl&#34;</span>|  
+
+<span style="color:#408080;font-style:italic"># https://github.com/jupyter/notebook/issues/507#issuecomment-145390380</span>
+sudo openssl req -x509 -nodes -days <span style="color:#666">365</span> -newkey rsa:2048 -keyout mycert.pem -out mycert.pem
+sudo chown <span style="color:#19177c">$USER</span>:<span style="color:#19177c">$USER</span> <span style="color:#19177c">$HOME</span>/certs/mycert.pem</code></pre></div>
+<h3 id="notebook-configuration">Notebook configuration</h3>
+
+<p>Now we&rsquo;ll generate our jupyter notebook configuration and update it
+with our password and a few other settings.</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">jupyter notebook --generate-config
+jupyter notebook password <span style="color:#408080;font-style:italic"># enter password on promt</span>
+sudo chown <span style="color:#19177c">$USER</span>:<span style="color:#19177c">$USER</span> <span style="color:#19177c">$HOME</span>/.jupyter <span style="color:#408080;font-style:italic">#change ownership for file prepending</span>
+
+<span style="color:#19177c">JUPYTER_CONFIG_FILE</span><span style="color:#666">=</span><span style="color:#ba2121">&#34;</span><span style="color:#19177c">$HOME</span><span style="color:#ba2121">/.jupyter/jupyter_notebook_config.py&#34;</span>
+<span style="color:#408080;font-style:italic"># Parses password from json</span>
+<span style="color:#19177c">JUPYTER_PWD</span><span style="color:#666">=</span><span style="color:#008000;font-weight:bold">$(</span>sudo jq <span style="color:#ba2121">&#39;.NotebookApp.password&#39;</span> <span style="color:#19177c">$HOME</span>/.jupyter/jupyter_notebook_config.json<span style="color:#008000;font-weight:bold">)</span>
+
+<span style="color:#408080;font-style:italic"># Configuration string</span>
+<span style="color:#19177c">JUPYTER_CONFIG_UPDATE</span><span style="color:#666">=</span><span style="color:#b62;font-weight:bold">\
+</span><span style="color:#b62;font-weight:bold"></span><span style="color:#ba2121">&#34;c = get_config()
+</span><span style="color:#ba2121">
+</span><span style="color:#ba2121"># Kernel config
+</span><span style="color:#ba2121">c.IPKernelApp.pylab = &#39;inline&#39;  # Inline plotting
+</span><span style="color:#ba2121">
+</span><span style="color:#ba2121"># Notebook config
+</span><span style="color:#ba2121">c.NotebookApp.certfile = u&#39;</span><span style="color:#19177c">$HOME</span><span style="color:#ba2121">/certs/mycert.pem&#39; #location of your certificate file
+</span><span style="color:#ba2121">c.NotebookApp.ip = &#39;0.0.0.0&#39;
+</span><span style="color:#ba2121">c.NotebookApp.open_browser = False  #so that the ipython notebook does not opens up a browser by default
+</span><span style="color:#ba2121">c.NotebookApp.password = u</span><span style="color:#19177c">$JUPYTER_PWD</span><span style="color:#ba2121">  #the encrypted password we generated above
+</span><span style="color:#ba2121"># Set the port to 8888
+</span><span style="color:#ba2121">c.NotebookApp.port = 8888
+</span><span style="color:#ba2121">
+</span><span style="color:#ba2121"># Configuration file for jupyter-notebook.
+</span><span style="color:#ba2121">c.Notebook.allow_origin=&#39;*&#39;
+</span><span style="color:#ba2121">
+</span><span style="color:#ba2121">c.InteractiveShellApp.extensions = [&#39;autoreload&#39;]
+</span><span style="color:#ba2121">c.InteractiveShellApp.exec_lines = [&#39;%autoreload 2&#39;]&#34;</span>
+
+<span style="color:#408080;font-style:italic"># Concat config string with original file and update config file</span>
+sudo <span style="color:#008000">printf</span> <span style="color:#ba2121">&#39;%s\n%s\n&#39;</span> <span style="color:#ba2121">&#34;</span><span style="color:#19177c">$JUPYTER_CONFIG_UPDATE</span><span style="color:#ba2121">&#34;</span> <span style="color:#ba2121">&#34;</span><span style="color:#008000;font-weight:bold">$(</span>sudo cat <span style="color:#19177c">$JUPYTER_CONFIG_FILE</span><span style="color:#008000;font-weight:bold">)</span><span style="color:#ba2121">&#34;</span> &gt; <span style="color:#19177c">$JUPYTER_CONFIG_FILE</span></code></pre></div>
+<h3 id="test-it-out">Test it out</h3>
+
+<p>After you&rsquo;ve run the code above you should be able to start the
+kernel with <code>jupyter notebook</code> and head over <code>https://&lt;JETSON IP&gt;:8888</code>
+from you local browser.</p>
+
+<p>Just an FYI, my shell gave me the name of my Nano with the port attached (like
+<code>https://&lt;nano name&gt;:8888</code>) as the link to my notebook but
+I had to fall back to using the actual IP of my Nano.</p>
+
+<h2 id="and-there-you-have-it">And there you have it</h2>
+
+<p>We&rsquo;re all ready to crank out some notebooks on the Nano; thanks for reading.</p>
+
+<p>And here are a couple more links that helped bring this together:</p>
+
+<ol>
+<li><a href="https://chrisalbon.com/aws/basics/run_project_jupyter_on_amazon_ec2/">https://chrisalbon.com/aws/basics/run_project_jupyter_on_amazon_ec2/</a></li>
+<li><a href="https://www.zaferarican.com/post/transfer-learning-training-on-jetson-nano-with-pytorch">https://www.zaferarican.com/post/transfer-learning-training-on-jetson-nano-with-pytorch</a></li>
+</ol>
+
+</div>
+
+<h2>Comments</h2>
+<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "spf13" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </main>
+
+    
+  </body>
+</html>
