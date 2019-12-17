@@ -21,16 +21,6 @@
     </item>
     
     <item>
-      <title>Handy Bash</title>
-      <link>https://bibsian.github.io/posts/handy-bash/</link>
-      <pubDate>Tue, 19 Nov 2019 20:03:29 -0800</pubDate>
-      
-      <guid>https://bibsian.github.io/posts/handy-bash/</guid>
-      <description> This is less of a post and more of a quick cheat sheet for when I&amp;rsquo;m working on stuff.
-Secure copy - scp Copying files from local to remote servers # I load my remote LOGIN &amp;amp; HOME dir in my ~/.bashrc # i.e. scp -r &amp;lt;path-to-file&amp;gt; &amp;#34;$JETSON_LOGIN:$JETSON_HOME/subdirectory&amp;#34; scp -r /local/file &amp;lt;host_login_name&amp;gt;@&amp;lt;host_ip&amp;gt;:/remote/directory/</description>
-    </item>
-    
-    <item>
       <title>Running Jupyter Notebooks on the Jetson Nano (via https)</title>
       <link>https://bibsian.github.io/posts/jupyter-setup/</link>
       <pubDate>Sun, 17 Nov 2019 13:44:36 -0800</pubDate>
