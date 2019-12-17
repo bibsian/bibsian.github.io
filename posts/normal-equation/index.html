@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.59.1" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>The Normal Equation: Part 1 - Formulating the Cost Function &middot; Andrew Bibian</title>
+  <meta name="description" content="" />
+
+  
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/hyde.css">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/all.css">
+  <script defer src="https://bibsian.github.io/js/all.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/x-mathjax-config">
+   MathJax.Hub.Config(
+       {
+           tex2jax: {
+               inlineMath: [["$","$"],["\\(","\\)"]],
+               displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+               processEscapes: true
+           },
+           TeX: {
+               extensions: ["color.js"]
+           }
+       }
+   )
+  </script>
+  
+  
+  
+</head>
+
+  <body class="theme-base-08 ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://bibsian.github.io/"><h1>Andrew Bibian</h1></a>
+      <p class="lead">
+       This is my notebook for all things Data Science 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://bibsian.github.io/">Home</a> </li>
+        <li><a href="https://github.com/bibsian/">
+	  
+	  <i class="fab fa-github"></i>
+	  
+	  Github
+	  </a></li><li><a href="https://www.linkedin.com/in/andrewjamesbibian/">
+	  
+	  <i class="fab fa-linkedin"></i>
+	  
+	  LinkedIn
+	  </a></li>
+      </ul>
+    </nav>
+
+    <p>&copy; 2019. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>The Normal Equation: Part 1 - Formulating the Cost Function</h1>
+  <time datetime=2019-12-15T11:06:54-0800 class="post-date">Sun, Dec 15, 2019</time>
+  
+
+<p>I&rsquo;ve never found a blog post that truly made me understand
+how to derive the normal equation. I think a reason for this is
+lot of authors have their own perspective on the problem, leading
+to a mental image I can&rsquo;t quite grasp onto. But having
+grabbled with linear algebra for a bit, I think I&rsquo;m
+ready to try my hand at writing a series of posts that helps someone like my
+former self understand such an equation.</p>
+
+<p>In this first post I&rsquo;ll come up with an intuition for formulating
+the cost function we always see when talking about regression.
+I assume you know what a vector is and how to add/subtract them,
+what the span of a matrix/vector is, linear transofrmations, and norms.
+We won&rsquo;t do any calculus until the next post so no need for that here.</p>
+
+<h1 id="the-line-of-best-fit">The line of best fit</h1>
+
+<h2 id="2-dimensions">2 Dimensions</h2>
+
+<p>The idea behind the normal equation is it&rsquo;s the analytical solution
+to a regression problem where you&rsquo;re trying to find the line of
+best fit through your data, like the firgure below.</p>
+
+<p><img src="/posts/imgs/normal-equation/scatterplot.png" alt="2dline" /></p>
+
+<p>In two dimension we can express the line above with the
+equation:
+$$\color{black}\vec{y}=m\vec{x}+b$$</p>
+
+<p>Where:</p>
+
+<ul>
+<li>$\color{black}\vec{y}$ is a column vector of observations</li>
+<li>$\color{black}\vec{x}$ is a column vector for a single covariate</li>
+<li>$\color{black}b$ is a scalar representing the intercept for the line (we&rsquo;ll assume 0 here) and</li>
+<li>$\color{black}m$ is also a scalar representing the slope of the line</li>
+</ul>
+
+<p>This is a great way to visualize the equation, however, once you
+start adding more covariates we need to stop thinking
+about the line of best fit and think more about the (hyper)plane of best
+fit.</p>
+
+<h2 id="n-dimensions">N Dimensions</h2>
+
+<p>Below we depict an analagous figure to the line of best fit
+but extended into 3 dimensions.
+<img src="/posts/imgs/normal-equation/3dscatterplot.png" alt="3dplane" /></p>
+
+<p>In order to represent the hyperplane that&rsquo;s passing through this data
+we can simply change our 2D notation into 3D with matrices like so:</p>
+
+<p>$$
+\color{black} \vec{y} = A\vec{\theta} + b
+$$</p>
+
+<p>Where:</p>
+
+<ul>
+<li>$\color{black}\vec{y}$ is your column vector of <strong>m</strong> observations</li>
+<li>$\color{black}A$ is <strong>m x n</strong> matrix of <strong>n</strong> covariate columns vectors</li>
+<li>$\color{black}\vec{\theta}$ is a <strong>n x 1</strong> column vector of regression coefficients and</li>
+<li>$\color{black}b$ is scalar intercept.</li>
+</ul>
+
+<p>To simplify further, we could could include the intercept ($\color{black}b$)
+within the coefficient vector $\color{black}\vec{\theta}$ and remove it from the
+above equation so $\color{black}\vec{\theta}$ will now look like this,</p>
+
+<div>
+$$
+\color{black}
+\begin{bmatrix}
+\theta_1 \\
+... \\
+\theta_n \\
+b
+\end{bmatrix}
+$$
+</div>
+
+<p>and the equation for our &lsquo;plane&rsquo; of best fit simplifies to a matrix
+vector multiplication:</p>
+
+<p>$$
+\color{black}\vec{y}=A\vec{\theta}\tag{1}
+$$</p>
+
+<h1 id="defining-the-cost-function">Defining the Cost Function</h1>
+
+<p>The way I like to look at equation $\color{black}(1)$ is to think
+of the matrix $\color{black}A$ as a linear map, transforming
+our column vector $\color{black}\vec{\theta}$ to match
+the same vector as $\color{black}\vec{y}$ (i.e. span the same space).
+But in order to
+transform $\color{black}\vec{\theta}$ into $\color{black}\vec{y}$
+we need to first find the right combination of parameters to map
+into the space of $\color{black}A$ (i.e. find the optimal
+$\color{black}\vec{\theta}$&rsquo;s). And the way
+we can find this combination of parameters is with our good friends
+calculus and geometry.</p>
+
+<p>But before we start taking derivates of a function to find the
+optimal $\color{black}\vec{\theta}$,
+we need to define the function we&rsquo;re going to optimize
+(i.e. the cost function $\color{black}J(\vec{\theta})$). We can
+create a cost function for equation $\color{black}\color{black}(1)\space\space\vec{y}=A\vec{\theta}$
+by thinking about minimizing the difference vector between
+$\color{black}\vec{A\theta}$ and $\color{black}\vec{y}$; think of
+the resulting vector you get when doing vector subtraction because
+$\color{black}\vec{A\theta}$ is a vector as defined by it&rsquo;s dimensions
+just as much as $\color{black}\vec{y}$ is a vector.</p>
+
+<p><img src="/posts/imgs/normal-equation/difference_vector.png" alt="diffvec" /></p>
+
+<p>And now think of representing the difference
+vector in orange above ($\color{black}\vec{A\theta}-\vec{y}$) as
+one big vector itself $\color{black}\vec{A\theta-y}$ (see below), and we can
+really start to play with our perspective on the cost function $\color{black}J(\vec{\theta})$
+to be.</p>
+
+<p><img src="/posts/imgs/normal-equation/expression_vector.png" alt="expressionvec" /></p>
+
+<p>From a geometric viewpoint we want to know how long our big
+expression vector in orange above is i.e. the length of $\color{black}\vec{A\theta-y}$.
+The nifty thing about measuring a vector is it&rsquo;s the same thing as taking
+the dot product with itself.</p>
+
+<p>$$
+\color{black}(\vec{A\theta-y})\cdot(\color{black}\vec{A\theta-y})
+$$
+Because
+$$
+\color{black}(\vec{A\theta-y})\cdot(\color{black}\vec{A\theta-y}) =
+\cos(\alpha)\space||\vec{(A\theta-y)}||\space|| \vec{(A\theta-y)}||
+$$
+And when you&rsquo;re dotting a vector with itself, the angle ($\color{black}\alpha$)
+between a vector and itself is 0 so the dot product expression
+$$
+\color{black}(\vec{A\theta-y})\cdot(\color{black}\vec{A\theta-y}) =
+\cos(0)\space||\vec{(A\theta-y)}||\space|| \vec{(A\theta-y)}||
+$$
+simplies to this,
+$$
+\color{black}(\vec{A\theta-y})\cdot(\color{black}\vec{A\theta-y}) =
+\space||\vec{(A\theta-y)}||\space|| \vec{(A\theta-y)}||
+$$
+because the $\color{black}cos(0)=1$ and this
+turns out to be the L2 norm of $\color{black}(\vec{A\theta - y})$ (i.e. the norm squared).
+$$
+\color{black}(\vec{A\theta-y})\cdot(\color{black}\vec{A\theta-y}) =
+\space||\vec{(A\theta-y)}||^2\tag{2}
+$$</p>
+
+<p>So it turns out the we can measure the length of the vector represented by our expression,
+$\color{black}(\vec{A\theta - y})$, through the
+$\color{black}L2$ norm and that allows us to define our cost function
+$\color{black}J(\vec{\theta})$.
+$$
+\color{black}J(\vec{\theta})=||A\vec{\theta}-\vec{y}||^2\tag{3}
+$$</p>
+
+<p>And when we want to find a set of parameters $\color{black}\vec{\theta}$ that
+minimizes our &lsquo;difference&rsquo; vector in orange (above), we have an optimization
+problem (which is where calculus comes in).</p>
+
+<h2 id="visual-intuition-of-the-cost-function">Visual Intuition of the Cost Function</h2>
+
+<p>Now that we know how to define our cost function as a optimization problem that
+minimizes the length of vector ($\color{black}\vec{A\theta - y}$)
+representing the difference between,
+$\color{black}\vec{y}$ and $\color{black}\vec{A\theta}$ we can
+come up with a visual to help intuit the process.</p>
+
+<p><img src="/posts/imgs/normal-equation/cost_fxn.png" alt="costfxn" /></p>
+
+<h1 id="the-cost-function-rearranged">The Cost Function Rearranged</h1>
+
+<p>While the formulation of our cost function in equation $\color{black}(3)$
+is intuitively nice, it doesn&rsquo;t help us actually solve the optimization
+problem involved with finding the parameter vector $\color{black}\vec{\theta}$.</p>
+
+<p>To make our cost function $\color{black}J(\vec{\theta})$ more amenable
+to solving with calculus and derivatives, lets get rid of the squared component.
+Remember, according to equation $\color{black}(2)$, $\space\space\color{black}
+(\vec{A\theta-y})\cdot(\vec{A\theta-y}) =
+\space||\vec{(A\theta-y)}||^2$, the $\color{black}L2$ norm is
+the equivalent to the dot product and you can rewrite the dot product
+in terms of multiplication between a row and column vector,
+$$
+\color{black}J(\vec{\theta})=
+\space||\vec{(A\theta-y)}||^2=
+(\vec{A\theta-y})\cdot(\vec{A\theta-y})=
+\color{black}(\vec{A\theta - y})^T
+(\color{black}\vec{A\theta - y})
+$$</p>
+
+<p>And because we used a big vector notation above, we can shift our perspective
+down to the indiviual vectors and rewrite the cost function as this:
+$$
+\color{black}J(\vec{\theta})=(A\vec{\theta} - \vec{y})^T(A\vec{\theta} - \vec{y})
+$$</p>
+
+<p>Where we can now distribute the transpose which you can think of
+as an operator that just rotates vectors, and rearrange terms
+to reflect rotated vectors,
+$$
+\color{black} = ((A\vec{\theta})^T - (\vec{y})^T)(A\vec{\theta} - \vec{y})
+$$
+$$
+\color{black} = (\vec{\theta}^TA^T - \vec{y}^T)(A\vec{\theta} - \vec{y})
+$$</p>
+
+<p>Then do the multiplcation (making sure the terms stay in the proper
+order)
+$$
+\color{black} = \vec{\theta}^TA^TA\vec{\theta} -
+\vec{y}^TA\vec{\theta} -<br />
+\vec{\theta}^TA^T\vec{y} -
+\vec{y}^T\vec{y}
+$$</p>
+
+<p>And with one more rearragnement, remebering that
+$\color{black}(A\vec{\theta})^T = \vec{\theta}^TA^T$,
+we can take the transpose of this whole term $\color{black}(\vec{y}^TA\vec{\theta})^T$
+and we&rsquo;ll get this,
+$$
+\color{black} = \vec{\theta}^TA^TA\vec{\theta} -
+\vec{\theta}^TA^T\vec{y} -
+\vec{\theta}^TA^T\vec{y} -
+\vec{y}^T\vec{y}
+$$
+Which simplifies our cost function to a form where we can now
+solve the optimization problem with derivates:
+$$
+\color{black}J(\vec{\theta}) = \vec{\theta}^TA^TA\vec{\theta} -
+2\vec{\theta}^TA^T\vec{y} -
+\vec{y}^T\vec{y}\tag{4}
+$$</p>
+
+<p>And there you have it, the cost function visualized, defined,
+and ready for optimization. In the next post we&rsquo;ll cover
+how to solve this system of equations i.e. find
+the analytical solution to $\color{black}J(\vec{\theta})=0$</p>
+
+<h1 id="fin">Fin</h1>
+
+<p>Thanks for reading.There were a number
+of resources involved in helping me come up with this perspective
+and here&rsquo;s a few for you to checkout yourself:</p>
+
+<ul>
+<li><a href="https://www.3blue1brown.com/essence-of-linear-algebra-page">https://www.3blue1brown.com/essence-of-linear-algebra-page</a></li>
+<li><a href="https://www.svm-tutorial.com/2014/11/svm-understanding-math-part-2/">https://www.svm-tutorial.com/2014/11/svm-understanding-math-part-2/</a></li>
+<li><a href="https://eli.thegreenplace.net/2015/the-normal-equation-and-matrix-calculus/">https://eli.thegreenplace.net/2015/the-normal-equation-and-matrix-calculus/</a></li>
+</ul>
+
+</div>
+
+<h2>Comments</h2>
+<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "spf13" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </main>
+
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-153110440-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>
