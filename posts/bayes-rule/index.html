@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.59.1" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Bayes Rule - An Example with Code &middot; Andrew Bibian</title>
+  <meta name="description" content="" />
+
+  
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/hyde.css">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/all.css">
+  <script defer src="https://bibsian.github.io/js/all.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/x-mathjax-config">
+   MathJax.Hub.Config(
+       {
+           tex2jax: {
+               inlineMath: [["$","$"],["\\(","\\)"]],
+               displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+               processEscapes: false
+           }
+       }
+   )
+  </script>
+  <script type="text/x-mathjax-config">
+   MathJax.Hub.Config({ TeX: { extensions: ["color.js"] }});
+  </script>
+
+  
+  
+</head>
+
+  <body class="theme-base-08 ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://bibsian.github.io/"><h1>Andrew Bibian</h1></a>
+      <p class="lead">
+       This is my notebook for all things Data Science 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://bibsian.github.io/">Home</a> </li>
+        <li><a href="https://github.com/bibsian/">
+	  
+	  <i class="fab fa-github"></i>
+	  
+	  Github
+	  </a></li><li><a href="https://www.linkedin.com/in/andrewjamesbibian/">
+	  
+	  <i class="fab fa-linkedin"></i>
+          
+	  LinkedIn
+	  </a></li><li><a href="/static/files/ajbibian_resume.pdf">
+	  
+          <i class="fas fa-file-pdf"></i>
+	  
+	  Resume
+	  </a></li>
+      </ul>
+    </nav>
+
+    <p>&copy; 2020. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Bayes Rule - An Example with Code</h1>
+  <time datetime=2020-01-05T18:44:44-0800 class="post-date">Sun, Jan 5, 2020</time>
+  
+
+<p>In the interests of learning and developing a better sense on how to
+to use Bayes Rule we&rsquo;re going to do two things in this post.</p>
+
+<p>1) We&rsquo;re going use Bayes Rules  to come up with
+an analytical solution to a probability problem (like you&rsquo;d see in
+an interview setting).</p>
+
+<p>And</p>
+
+<p>2) We&rsquo;ll simulate some data to see if we can approximate
+an analytical solution (to help develop our programming chops).</p>
+
+<h2 id="the-scenario">The Scenario</h2>
+
+<p>Imagine you&rsquo;re a patient who has just received a
+positive test result for HIV. Horrified, you know false positives
+are possible so you set out to calculate what is the probability of
+having HIV given you tested positive i.e. what is $\color{black}P(HIV|+)$?</p>
+
+<p>Available to you are a couple more pieces of information:</p>
+
+<ul>
+<li><p>The prevalence of HIV in the population:</p>
+
+<ul>
+<li>$\color{black}P(HIV) = 0.0001$ (.01%)</li>
+</ul></li>
+
+<li><p>The probability of testing positive given you have HIV:</p>
+
+<ul>
+<li>$\color{black}P(+|HIV) = 0.999$ (99.9%)</li>
+</ul></li>
+</ul>
+
+<h2 id="leveraging-bayes-rule">Leveraging Bayes Rule</h2>
+
+<p>If you haven&rsquo;t heard of Bayes Rule it&rsquo;s essentially a way to
+reason about conditional probabilities.I think the easiest way to
+remember it is to just use some mathematical symmetry. If you recall
+the formula for the joint probability of two dependent variables we get
+the following:</p>
+
+<p>$$
+\color{black}P(HIV \cap +) = P(HIV|+)*P(+)
+$$</p>
+
+<p>The neat (and symmetric) thing about that joint probability is
+we can also write the it like this:</p>
+
+<p>$$
+\color{black}P(+ \cap HIV) = P(+|HIV)*P(HIV)
+$$</p>
+
+<p>And with some substitution
+$$
+\color{black}P(HIV|+)*P(+) = P(+|HIV)*P(HIV)
+$$
+then rearrangement and we now have a formula
+for calculating our conditional probability through Bayes Rule!
+$$
+\color{black}P(HIV|+) = \frac{P(+|HIV)*P(HIV)}{P(+)} \tag{1}
+$$</p>
+
+<p>I can introduce some terms here about priors, posteriors, and likelihoods
+but I&rsquo;ll refrain in the interests of brevity; just know that
+these terms are related to quantities in equation (1).</p>
+
+<h2 id="the-analytical-solution">The Analytical Solution</h2>
+
+<p>Combining the data supplied to us in the scenario with equation
+(1) and the only real thinking we have to do is derive our
+denominator $\color{black}P(+)$ from Bayes Rule and we&rsquo;ll be able
+to generate our probability of interests.</p>
+
+<p>To derive $\color{black}P(+)$ you have
+to think about the <a href="https://en.wikipedia.org/wiki/Law_of_total_probability">Law of Total Probability</a>.
+The law states that you can find a probability
+by summing up the intersections of it&rsquo;s disjoint sets and here&rsquo;s a
+Venn Diagram for a visual:</p>
+
+<p><img src="/posts/imgs/bayes-rule/venn_diagram.png" alt="Visual of Disjoint sets" /></p>
+
+<p>As you can see from the visual above (and invoking the Law of Total Probability),
+our probability of interests can be defined as:</p>
+
+<p>$$
+\color{black}P(+) = P(+ \cap HIV) + P(+ \cap HIV^\mathsf{c})
+$$</p>
+
+<p>We can break down this equation down a bit further</p>
+
+<p>$$
+\color{black}P(+) = P(+|HIV)*P(HIV) + P(+|HIV^\mathsf{c})*P(HIV^\mathsf{c})
+$$</p>
+
+<p>And with one last rearrangement to make it very apparent how to
+derive this quantity and we&rsquo;re left with this:</p>
+
+<p>$$
+\color{black}P(+) = P(+|HIV)P(HIV) + (1-P(+|HIV))(1-P(HIV))
+$$</p>
+
+<p>All we have to do now is plug and chug to generate our probability of
+interests, $\color{black}P(HIV|+)$. And here&rsquo;s the solution if
+you haven&rsquo;t tried yourself yet:</p>
+
+<p>$$
+\color{black}P(HIV|+) = \frac{P(+|HIV)P(HIV)}{P(+|HIV)P(HIV) + (1-P(+|HIV))(1-P(HIV))}
+$$</p>
+
+<p>Now, substituting in our know quantities and we get:</p>
+
+<p>$$
+\color{black}P(HIV|+) = \frac{0.999*0.0001}{0.999*0.0001 + (1-0.999)(1-0.0001)}
+$$</p>
+
+<p>Which evaluates to $\color{black}P(HIV|+) = 0.09083$. And there
+we have it, the analytical solution to our problem using Bayes
+Rules. Now lets see if we can approximate this solution
+with some simulated data.</p>
+
+<h2 id="the-code">The Code</h2>
+
+<p>There&rsquo;s a few things to note about this simulation.</p>
+
+<p>1) This is a two stage data generation process. First you simulate
+data for people with HIV then you simulate whether those people
+will test positively.</p>
+
+<p>2) We&rsquo;re going to need to generate a large number of samples
+because of the low prevalence of HIV in the population (0.01%).</p>
+
+<p>And</p>
+
+<p>3) Because doing one simulation of the data generation process
+would just give us a single point estimate (i.e. the mean),
+we&rsquo;re going to do multiple simulations
+to generate a distribution of means then take the mean of that
+distribution as our approximation of the probability (think  of
+the central limit theorem).</p>
+
+<p>So, rather than expanding too much on the code, I&rsquo;ll leave it here
+with some comments.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> joblib <span style="color:#f92672">import</span> Parallel, delayed
+<span style="color:#f92672">from</span> numpy.random <span style="color:#f92672">import</span> binomial <span style="color:#66d9ef">as</span> rbinom
+<span style="color:#f92672">from</span> numpy <span style="color:#f92672">import</span> array, empty, isclose
+
+<span style="color:#75715e"># Our given data</span>
+p_positive_g_hiv <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.999</span>
+p_hiv <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0001</span>
+p_not_hiv <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span> p_hiv
+p_positive_g_not_hiv <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">-</span>p_positive_g_hiv
+
+<span style="color:#75715e"># Patient population sample size</span>
+hiv_ss <span style="color:#f92672">=</span> <span style="color:#ae81ff">2e6</span> <span style="color:#75715e"># 2 million</span>
+
+<span style="color:#75715e"># How many &#39;simulations&#39; to run</span>
+distr_ss <span style="color:#f92672">=</span> <span style="color:#ae81ff">400</span>
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">sample</span>(pop_ss<span style="color:#f92672">=</span>hiv_ss):
+    <span style="color:#e6db74">&#34;&#34;&#34; 
+</span><span style="color:#e6db74">    Function to simulate and estimate a single mean for the P(HIV|+).
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">    :param pop_ss: Sample size of the population we&#39;re simulating
+</span><span style="color:#e6db74">    i.e. how many people are we testing for HIV &amp; testing
+</span><span style="color:#e6db74">    :type pop_ss: int
+</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+    hiv <span style="color:#f92672">=</span> rbinom(<span style="color:#ae81ff">1</span>, p_hiv, int(pop_ss)) 
+    test <span style="color:#f92672">=</span> empty(int(pop_ss))
+    test[hiv<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> rbinom(<span style="color:#ae81ff">1</span>, p_positive_g_not_hiv, test[hiv<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>shape)
+    test[hiv<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> rbinom(<span style="color:#ae81ff">1</span>, p_positive_g_hiv, test[hiv<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>shape)
+    <span style="color:#66d9ef">return</span> hiv[test<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>mean()
+
+
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">run_parallel</span>(func, n_runs, n_jobs<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>):
+    <span style="color:#e6db74">&#34;&#34;&#34;
+</span><span style="color:#e6db74">    Wrapper for parallel processing a function 
+</span><span style="color:#e6db74">    (with default args/kwargs).
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">    :param func: Function to parallel process
+</span><span style="color:#e6db74">    :type func: func
+</span><span style="color:#e6db74">    :param n_runs: Number of times to execute function
+</span><span style="color:#e6db74">    :type n_runs: int
+</span><span style="color:#e6db74">    :param n_jobs: Number of cores to use
+</span><span style="color:#e6db74">    :type n_jobs: int
+</span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+    <span style="color:#66d9ef">return</span> array(
+        Parallel(n_jobs<span style="color:#f92672">=</span>n_jobs)(delayed(func)()
+        <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(distr_ss))
+    )
+
+
+<span style="color:#75715e"># Took about 24s on my 2015 macbook air</span>
+distr <span style="color:#f92672">=</span> run_parallel(func<span style="color:#f92672">=</span>sample, n_runs<span style="color:#f92672">=</span>distr_ss)
+
+<span style="color:#75715e"># Check our approximation to the real answer</span>
+p_test_postive <span style="color:#f92672">=</span> p_positive_g_hiv<span style="color:#f92672">*</span>p_hiv <span style="color:#f92672">+</span> p_positive_g_not_hiv<span style="color:#f92672">*</span>p_not_hiv
+p_hiv_g_positive <span style="color:#f92672">=</span> (p_positive_g_hiv<span style="color:#f92672">*</span>p_hiv)<span style="color:#f92672">/</span>p_test_postive
+
+<span style="color:#66d9ef">assert</span> isclose(
+       distr<span style="color:#f92672">.</span>mean(),
+       p_hiv_g_positive, atol<span style="color:#f92672">=</span><span style="color:#ae81ff">0.001</span>
+), <span style="color:#e6db74">&#34;Not a good approximation&#34;</span></code></pre></div>
+<p>So there we have it.
+In the image below I&rsquo;ve visualized the distrubtion of means we created
+from the code above. The true probability is marked
+by a vertical line in red and our approximation is marked with yellow
+vertical line.</p>
+
+<p><img src="/posts/imgs/bayes-rule/bayes-sim.png" alt="Outcome of Simulation" /></p>
+
+<p>Feel free to comment, play with the code, and make
+some more interesting plots. Thanks for reading and I hope you enjoyed.</p>
+
+</div>
+
+<h2>Comments</h2>
+<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "spf13" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </main>
+
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-153110440-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>
