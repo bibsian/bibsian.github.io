@@ -3,7 +3,7 @@
 <head>
   <link href="https://gmpg.org/xfn/11" rel="profile">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="generator" content="Hugo 0.59.1" />
+  <meta name="generator" content="Hugo 0.101.0" />
 
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -69,7 +69,7 @@
 	  <i class="fab fa-linkedin"></i>
           
 	  LinkedIn
-	  </a></li><li><a href="/static/files/ajbibian_resume.pdf">
+	  </a></li><li><a href="/static/files/resumeabibian2022.pdf">
 	  
           <i class="fas fa-file-pdf"></i>
 	  
@@ -78,7 +78,7 @@
       </ul>
     </nav>
 
-    <p>&copy; 2020. All rights reserved. </p>
+    <p>&copy; 2022. All rights reserved. </p>
   </div>
 </aside>
 
@@ -86,21 +86,16 @@
     <div class="post">
   <h1>Configuring the Jetson Nano</h1>
   <time datetime=2019-11-10T20:37:19-0800 class="post-date">Sun, Nov 10, 2019</time>
-  
-
-<h2 id="background">Background</h2>
-
+  <h2 id="background">Background</h2>
 <p>If you&rsquo;ve never heard of Nvidia&rsquo;s <a href="https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-nano/">Jetson Nano</a>
 you can think of it as a Raspberry Pi with a built-in
 GPU; their <a href="https://developer.nvidia.com/embedded/community/jetson-projects#hey_jetson">developer community page</a>
 has some pretty interesting projects if you&rsquo;d like to learn more.</p>
-
 <p>Now, you&rsquo;re only going to get some milage out of the rest of this post
 if you&rsquo;ve already setup your Jetson Nano hardware.
 I set mine up to use the barrel jack for a power source, added a wifi
 card to the board, and connected it to the Raspberry
 Pi camera (to collect training data and use for real-time inference).</p>
-
 <p>So, while a number of cool projects with the Jetson Nano
 exists, I didn&rsquo;t contribute to any of them so that&rsquo;s why we&rsquo;re here.
 I have this idea that I think could be a pretty amazing applicaiton of
@@ -109,168 +104,159 @@ what better way to go about it than to create documentation
 as I go (i.e. fill up this blog with a ton posts). Hopefully,
 once I get far enough in my endeavors my idea will become more apparent but until
 then you&rsquo;ll just have to wait it out and check back in.</p>
-
-<h2 id="todays-goals-device-configuartion">Todays Goals - Device Configuartion</h2>
-
+<h2 id="todays-goals---device-configuartion">Todays Goals - Device Configuartion</h2>
 <ol>
-<li><p><strong>Mount a swap file</strong> for when the compute load
-gets a bit heavy on the Jetson</p></li>
-
-<li><p>Get my <strong>python setup</strong> the way I like it</p>
-
+<li>
+<p><strong>Mount a swap file</strong> for when the compute load
+gets a bit heavy on the Jetson</p>
+</li>
+<li>
+<p>Get my <strong>python setup</strong> the way I like it</p>
+</li>
+</ol>
 <ul>
 <li>Install pip3, virtualenv, pytorch,
 update my .bashrc for modifications/paths</li>
-</ul></li>
-
-<li><p>Enable <strong>SSH</strong>&lsquo;ing into the device</p>
-
+</ul>
+<ol start="3">
+<li>Enable <strong>SSH</strong>&lsquo;ing into the device</li>
+</ol>
 <ul>
 <li>Running the monitor isn&rsquo;t always necessary</li>
 <li>Also, you can mimic working on the cloud this
 way and practice your bash/terminal commands</li>
-</ul></li>
-</ol>
-
+</ul>
 <p>Note, all code below can be found in my <a href="https://github.com/bibsian/joys-of-jetson">joys-of-jetson</a>
 repo.</p>
-
-<h2 id="1-swap-file-setup-source-code-https-github-com-bibsian-joys-of-jetson-blob-master-swap-setup-sh">1. Swap file setup (<a href="https://github.com/bibsian/joys-of-jetson/blob/master/swap-setup.sh">source code</a>)</h2>
-
+<h2 id="1-swap-file-setup-source-codehttpsgithubcombibsianjoys-of-jetsonblobmasterswap-setupsh">1. Swap file setup (<a href="https://github.com/bibsian/joys-of-jetson/blob/master/swap-setup.sh">source code</a>)</h2>
 <p>You can copy the code below or the repo from
 git but once you run the script a swap file should be mounted
 to the Jetson. <strong>You&rsquo;ll need to restart your device for this to take effect.</strong></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/bin/bash
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e"># 8GB swap file setup</span> 
-<span style="color:#75715e"># Source Ref:</span>
-<span style="color:#75715e"># https://support.rackspace.com/how-to/create-a-linux-swap-file/</span>
-<span style="color:#75715e"># TODO Parameterize memory size</span>
-set -e
-
-<span style="color:#75715e"># Swapiness config</span>
-<span style="color:#75715e"># swapiness values: 0-100</span>
-<span style="color:#75715e"># 0 = swap is used when system is completely out of memory</span>
-<span style="color:#75715e"># Higher values enable system to swap idel prcoesses</span>
-SWAPINESS<span style="color:#f92672">=</span><span style="color:#ae81ff">60</span> <span style="color:#75715e"># typical value</span>
-
-echo <span style="color:#e6db74">&#39;Create swap file and formating&#39;</span>
-sudo fallocate -l 8G /mnt/8GB.swap <span style="color:#75715e"># Create swap file</span>
-sudo mkswap /mnt/8GB.swap <span style="color:#75715e"># Format file</span>
-sudo swapon /mnt/8GB.swap <span style="color:#75715e"># Add to filesystem as swap</span>
-
-echo <span style="color:#e6db74">&#39;Mounting swap file on boot&#39;</span>
-<span style="color:#75715e"># &lt;file system&gt; &lt;mount point&gt; &lt;type&gt; &lt;options&gt; &lt;dump&gt; &lt;pass&gt;</span>
-echo <span style="color:#e6db74">&#39;/mnt/8GB.swap none swap sw 0 0&#39;</span> | sudo tee -a /etc/fstab &gt; /dev/null
-
-echo <span style="color:#e6db74">&#34;Adding swapiness, </span>$SWAPINESS<span style="color:#e6db74">, to sysctl.conf&#34;</span>
-echo <span style="color:#e6db74">&#34;vm.swappiness=</span>$SWAPINESS<span style="color:#e6db74">&#34;</span> | sudo tee -a /etc/sysctl.conf &gt; /dev/null
-
-<span style="color:#75715e"># Show swap status</span>
-sudo swapon -s
-
-echo <span style="color:#e6db74">&#39;/mnt/8GB.swap should be active above - Restart Device&#39;</span></code></pre></div>
-<h2 id="2-python-pytorch-setup-source-code-https-github-com-bibsian-joys-of-jetson-blob-master-pytorch-python3-setup-sh">2. Python &amp; Pytorch Setup (<a href="https://github.com/bibsian/joys-of-jetson/blob/master/pytorch-python3-setup.sh">source code</a>)</h2>
-
+<div class="highlight"><pre tabindex="0" style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#bc7a00">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#bc7a00"></span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># 8GB swap file setup </span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># Source Ref:</span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># https://support.rackspace.com/how-to/create-a-linux-swap-file/</span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># TODO Parameterize memory size</span>
+</span></span><span style="display:flex;"><span><span style="color:#008000">set</span> -e
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># Swapiness config</span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># swapiness values: 0-100</span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># 0 = swap is used when system is completely out of memory</span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># Higher values enable system to swap idel prcoesses</span>
+</span></span><span style="display:flex;"><span><span style="color:#19177c">SWAPINESS</span><span style="color:#666">=</span><span style="color:#666">60</span> <span style="color:#408080;font-style:italic"># typical value</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#008000">echo</span> <span style="color:#ba2121">&#39;Create swap file and formating&#39;</span>
+</span></span><span style="display:flex;"><span>sudo fallocate -l 8G /mnt/8GB.swap <span style="color:#408080;font-style:italic"># Create swap file</span>
+</span></span><span style="display:flex;"><span>sudo mkswap /mnt/8GB.swap <span style="color:#408080;font-style:italic"># Format file</span>
+</span></span><span style="display:flex;"><span>sudo swapon /mnt/8GB.swap <span style="color:#408080;font-style:italic"># Add to filesystem as swap</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#008000">echo</span> <span style="color:#ba2121">&#39;Mounting swap file on boot&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># &lt;file system&gt; &lt;mount point&gt; &lt;type&gt; &lt;options&gt; &lt;dump&gt; &lt;pass&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#008000">echo</span> <span style="color:#ba2121">&#39;/mnt/8GB.swap none swap sw 0 0&#39;</span> | sudo tee -a /etc/fstab &gt; /dev/null
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#008000">echo</span> <span style="color:#ba2121">&#34;Adding swapiness, </span><span style="color:#19177c">$SWAPINESS</span><span style="color:#ba2121">, to sysctl.conf&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#008000">echo</span> <span style="color:#ba2121">&#34;vm.swappiness=</span><span style="color:#19177c">$SWAPINESS</span><span style="color:#ba2121">&#34;</span> | sudo tee -a /etc/sysctl.conf &gt; /dev/null
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># Show swap status</span>
+</span></span><span style="display:flex;"><span>sudo swapon -s
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#008000">echo</span> <span style="color:#ba2121">&#39;/mnt/8GB.swap should be active above - Restart Device&#39;</span>
+</span></span></code></pre></div><h2 id="2-python--pytorch-setup-source-codehttpsgithubcombibsianjoys-of-jetsonblobmasterpytorch-python3-setupsh">2. Python &amp; Pytorch Setup (<a href="https://github.com/bibsian/joys-of-jetson/blob/master/pytorch-python3-setup.sh">source code</a>)</h2>
 <p>Installing the pytorch wheel can take a bit so
 I suggest killing any non-essential processes (i.e.
 chromium, emacs, whatever you&rsquo;re working with just kill it).</p>
-
 <p>And I know this script is a bit chunky but I figure it&rsquo;s
 easier to have this configuation in one place
 then spread out over different scripts, for record
 keeping/reproducibility/tidy purposes.</p>
-
 <p>You can walk through it line by line if you want since I
 added comments but it boils down to a few functions for appending files,
 installing dependencies, and running a python script
 to check we can import pytorch and that cuda is available.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/bin/bash
-</span><span style="color:#75715e"></span>
-appendFile<span style="color:#f92672">(){</span>
-    echo <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> | sudo tee -a <span style="color:#e6db74">&#34;</span>$2<span style="color:#e6db74">&#34;</span> &gt; /dev/null
-<span style="color:#f92672">}</span>
-
-appendBashrc<span style="color:#f92672">(){</span>
-    FILE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$HOME<span style="color:#e6db74">/.bashrc&#34;</span>
-
-    <span style="color:#75715e"># Check is string exists in ~/.bashrc</span>
-    <span style="color:#66d9ef">if</span> ! grep -q <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> $FILE; <span style="color:#66d9ef">then</span>
-       appendFile <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$FILE<span style="color:#e6db74">&#34;</span>
-       source ~/.bashrc
-    <span style="color:#66d9ef">else</span>
-       echo <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74"> exists in </span>$FILE<span style="color:#e6db74">&#34;</span>
-    <span style="color:#66d9ef">fi</span>
-<span style="color:#f92672">}</span>
-
-PYTORCH_VIRTUAL_ENV_NAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pytorch&#34;</span>
-TORCH_URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://nvidia.box.com/shared/static/06vlvedmqpqstu1dym49fo7aapgfyyu9.whl&#34;</span>
-TORCH_WHL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;torch-1.2.0a0+8554416-cp36-cp36m-linux_aarch64.whl&#34;</span>
-TORCH_VISION_VERSION<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;v0.4.0&#34;</span>
-
-<span style="color:#75715e"># Setup pip and python3 dev</span> 
-sudo apt update <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span><span style="color:#f92672">&amp;&amp;</span> sudo apt-get -y install python3-pip <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>libatlas-base-dev gfortran libhdf5-serial-dev hdf5-tools <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>python3-dev
-
-<span style="color:#75715e"># Install virutal environments</span>
-sudo pip3 install virtualenv virtualenvwrapper
-
-<span style="color:#75715e"># Setting virtual env. paths</span>
-appendBashrc <span style="color:#e6db74">&#34;WORKON_HOME=</span>$HOME<span style="color:#e6db74">/.virtualenvs&#34;</span>
-appendBashrc <span style="color:#e6db74">&#39;VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3&#39;</span>
-appendBashrc <span style="color:#e6db74">&#39;source /usr/local/bin/virtualenvwrapper.sh&#39;</span>
-
-<span style="color:#75715e"># In case source ~/.bashrc not working because of scope</span>
-VIRTUALENVWRAPPER_PYTHON<span style="color:#f92672">=</span>/usr/bin/python3 
-source /usr/local/bin/virtualenvwrapper.sh
-
-mkvirtualenv <span style="color:#e6db74">&#34;</span>$PYTORCH_VIRTUAL_ENV_NAME<span style="color:#e6db74">&#34;</span> -p python3
-workon <span style="color:#e6db74">&#34;</span>$PYTORCH_VIRTUAL_ENV_NAME<span style="color:#e6db74">&#34;</span>
-
-<span style="color:#75715e"># Install pytorch for Jetson</span>
-<span style="color:#75715e"># Source: https://devtalk.nvidia.com/default/topic/1049071/jetson-nano/pytorch-for-jetson-nano-version-1-3-0-now-available/</span>
-wget $TORCH_URL -O $TORCH_WHL
-pip3 install numpy $TORCH_WHL <span style="color:#f92672">&amp;&amp;</span> rm $TORCH_WHL
-
-<span style="color:#75715e"># TorchVision</span>
-sudo apt-get -y install libjpeg-dev zlib1g-dev
-echo <span style="color:#e6db74">&#39;Starting TorchVision Build - will take a little bit&#39;</span>
-git clone --branch $TORCH_VISION_VERSION https://github.com/pytorch/vision torchvision <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span><span style="color:#f92672">&amp;&amp;</span> cd torchvision <span style="color:#f92672">&amp;&amp;</span> sudo python3 setup.py install <span style="color:#f92672">&amp;&amp;</span> cd ..
-
-<span style="color:#75715e"># https://stackoverflow.com/questions/23929235/multi-line-string-with-extra-space-preserved-indentation</span>
-ASSERT_SCRIPT<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>cat <span style="color:#e6db74">&lt;&lt;-END
-</span><span style="color:#e6db74">#!/usr/bin/python3
-</span><span style="color:#e6db74">import sys
-</span><span style="color:#e6db74">if __name__ == &#34;__main__&#34;:
-</span><span style="color:#e6db74">    try:
-</span><span style="color:#e6db74">        import torch
-</span><span style="color:#e6db74">        if torch.cuda.is_available():
-</span><span style="color:#e6db74">            sys.exit(&#34;true&#34;)
-</span><span style="color:#e6db74">    except Exception as e:
-</span><span style="color:#e6db74">        sys.exit(f&#34;false, str(e)&#34;)
-</span><span style="color:#e6db74">END</span>
-<span style="color:#66d9ef">)</span>
-
-<span style="color:#75715e"># https://vividcode.io/return-value-from-python-script-to-bash-shell/</span>
-INSTALLED<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>python3 -c <span style="color:#e6db74">&#34;</span>$ASSERT_SCRIPT<span style="color:#e6db74">&#34;</span> <span style="color:#ae81ff">2</span>&gt;&amp;<span style="color:#ae81ff">1</span> &gt; /dev/null<span style="color:#66d9ef">)</span>
-echo <span style="color:#e6db74">&#34;PyTorch imported and cuda available: </span>$INSTALLED<span style="color:#e6db74">&#34;</span></code></pre></div>
-<p>If after running this script you get a something that
+<div class="highlight"><pre tabindex="0" style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#bc7a00">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#bc7a00"></span>
+</span></span><span style="display:flex;"><span>appendFile<span style="color:#666">(){</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#008000">echo</span> <span style="color:#ba2121">&#34;</span><span style="color:#19177c">$1</span><span style="color:#ba2121">&#34;</span> | sudo tee -a <span style="color:#ba2121">&#34;</span><span style="color:#19177c">$2</span><span style="color:#ba2121">&#34;</span> &gt; /dev/null
+</span></span><span style="display:flex;"><span><span style="color:#666">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>appendBashrc<span style="color:#666">(){</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#19177c">FILE</span><span style="color:#666">=</span><span style="color:#ba2121">&#34;</span><span style="color:#19177c">$HOME</span><span style="color:#ba2121">/.bashrc&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#408080;font-style:italic"># Check is string exists in ~/.bashrc</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#008000;font-weight:bold">if</span> ! grep -q <span style="color:#ba2121">&#34;</span><span style="color:#19177c">$1</span><span style="color:#ba2121">&#34;</span> <span style="color:#19177c">$FILE</span>; <span style="color:#008000;font-weight:bold">then</span>
+</span></span><span style="display:flex;"><span>       appendFile <span style="color:#ba2121">&#34;</span><span style="color:#19177c">$1</span><span style="color:#ba2121">&#34;</span> <span style="color:#ba2121">&#34;</span><span style="color:#19177c">$FILE</span><span style="color:#ba2121">&#34;</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#008000">source</span> ~/.bashrc
+</span></span><span style="display:flex;"><span>    <span style="color:#008000;font-weight:bold">else</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#008000">echo</span> <span style="color:#ba2121">&#34;</span><span style="color:#19177c">$1</span><span style="color:#ba2121"> exists in </span><span style="color:#19177c">$FILE</span><span style="color:#ba2121">&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#008000;font-weight:bold">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#666">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#19177c">PYTORCH_VIRTUAL_ENV_NAME</span><span style="color:#666">=</span><span style="color:#ba2121">&#34;pytorch&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#19177c">TORCH_URL</span><span style="color:#666">=</span><span style="color:#ba2121">&#34;https://nvidia.box.com/shared/static/06vlvedmqpqstu1dym49fo7aapgfyyu9.whl&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#19177c">TORCH_WHL</span><span style="color:#666">=</span><span style="color:#ba2121">&#34;torch-1.2.0a0+8554416-cp36-cp36m-linux_aarch64.whl&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#19177c">TORCH_VISION_VERSION</span><span style="color:#666">=</span><span style="color:#ba2121">&#34;v0.4.0&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># Setup pip and python3 dev </span>
+</span></span><span style="display:flex;"><span>sudo apt update <span style="color:#b62;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#b62;font-weight:bold"></span><span style="color:#666">&amp;&amp;</span> sudo apt-get -y install python3-pip <span style="color:#b62;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#b62;font-weight:bold"></span>libatlas-base-dev gfortran libhdf5-serial-dev hdf5-tools <span style="color:#b62;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#b62;font-weight:bold"></span>python3-dev
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># Install virutal environments</span>
+</span></span><span style="display:flex;"><span>sudo pip3 install virtualenv virtualenvwrapper
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># Setting virtual env. paths</span>
+</span></span><span style="display:flex;"><span>appendBashrc <span style="color:#ba2121">&#34;WORKON_HOME=</span><span style="color:#19177c">$HOME</span><span style="color:#ba2121">/.virtualenvs&#34;</span>
+</span></span><span style="display:flex;"><span>appendBashrc <span style="color:#ba2121">&#39;VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3&#39;</span>
+</span></span><span style="display:flex;"><span>appendBashrc <span style="color:#ba2121">&#39;source /usr/local/bin/virtualenvwrapper.sh&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># In case source ~/.bashrc not working because of scope</span>
+</span></span><span style="display:flex;"><span><span style="color:#19177c">VIRTUALENVWRAPPER_PYTHON</span><span style="color:#666">=</span>/usr/bin/python3 
+</span></span><span style="display:flex;"><span><span style="color:#008000">source</span> /usr/local/bin/virtualenvwrapper.sh
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>mkvirtualenv <span style="color:#ba2121">&#34;</span><span style="color:#19177c">$PYTORCH_VIRTUAL_ENV_NAME</span><span style="color:#ba2121">&#34;</span> -p python3
+</span></span><span style="display:flex;"><span>workon <span style="color:#ba2121">&#34;</span><span style="color:#19177c">$PYTORCH_VIRTUAL_ENV_NAME</span><span style="color:#ba2121">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># Install pytorch for Jetson</span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># Source: https://devtalk.nvidia.com/default/topic/1049071/jetson-nano/pytorch-for-jetson-nano-version-1-3-0-now-available/</span>
+</span></span><span style="display:flex;"><span>wget <span style="color:#19177c">$TORCH_URL</span> -O <span style="color:#19177c">$TORCH_WHL</span>
+</span></span><span style="display:flex;"><span>pip3 install numpy <span style="color:#19177c">$TORCH_WHL</span> <span style="color:#666">&amp;&amp;</span> rm <span style="color:#19177c">$TORCH_WHL</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># TorchVision</span>
+</span></span><span style="display:flex;"><span>sudo apt-get -y install libjpeg-dev zlib1g-dev
+</span></span><span style="display:flex;"><span><span style="color:#008000">echo</span> <span style="color:#ba2121">&#39;Starting TorchVision Build - will take a little bit&#39;</span>
+</span></span><span style="display:flex;"><span>git clone --branch <span style="color:#19177c">$TORCH_VISION_VERSION</span> https://github.com/pytorch/vision torchvision <span style="color:#b62;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#b62;font-weight:bold"></span><span style="color:#666">&amp;&amp;</span> <span style="color:#008000">cd</span> torchvision <span style="color:#666">&amp;&amp;</span> sudo python3 setup.py install <span style="color:#666">&amp;&amp;</span> <span style="color:#008000">cd</span> ..
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># https://stackoverflow.com/questions/23929235/multi-line-string-with-extra-space-preserved-indentation</span>
+</span></span><span style="display:flex;"><span><span style="color:#19177c">ASSERT_SCRIPT</span><span style="color:#666">=</span><span style="color:#008000;font-weight:bold">$(</span>cat <span style="color:#ba2121">&lt;&lt;-END
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">#!/usr/bin/python3
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">import sys
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">if __name__ == &#34;__main__&#34;:
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">    try:
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">        import torch
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">        if torch.cuda.is_available():
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">            sys.exit(&#34;true&#34;)
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">    except Exception as e:
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">        sys.exit(f&#34;false, str(e)&#34;)
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">END</span>
+</span></span><span style="display:flex;"><span><span style="color:#008000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># https://vividcode.io/return-value-from-python-script-to-bash-shell/</span>
+</span></span><span style="display:flex;"><span><span style="color:#19177c">INSTALLED</span><span style="color:#666">=</span><span style="color:#008000;font-weight:bold">$(</span>python3 -c <span style="color:#ba2121">&#34;</span><span style="color:#19177c">$ASSERT_SCRIPT</span><span style="color:#ba2121">&#34;</span> 2&gt;&amp;<span style="color:#666">1</span> &gt; /dev/null<span style="color:#008000;font-weight:bold">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#008000">echo</span> <span style="color:#ba2121">&#34;PyTorch imported and cuda available: </span><span style="color:#19177c">$INSTALLED</span><span style="color:#ba2121">&#34;</span>
+</span></span></code></pre></div><p>If after running this script you get a something that
 says <code>PyTorch imported and cuda available: false, &lt;Error&gt;</code>
 then something went wrong along the way (hopefully, it won&rsquo;t
 but feel free to comment if it does). Other wise
 your PyTorch configuration should be ready to go.</p>
-
-<h2 id="3-ssh-ing-into-jetson">3. SSH&rsquo;ing into Jetson</h2>
-
+<h2 id="3-sshing-into-jetson">3. SSH&rsquo;ing into Jetson</h2>
 <p>Finally, since powering an external monitor can be a bit
 resource intense I&rsquo;m going to leave you with a bash command
 to print out the IP address of the Jetson Nano
 so you can SSH into it and use whatever editor you prefer/have installed
 (I use emacs).</p>
-
 <p>The command below might not work on your Jeston specifically
 but if you have an
 <a href="https://www.amazon.com/gp/product/B01MZA1AB2/ref=ppx_yo_dt_b_asin_title_o08_s02?ie=UTF8&amp;psc=1">Intel Dual Band Wireless-Ac 8265</a>
@@ -278,22 +264,18 @@ card installed it might work
 just fine; if it doesn&rsquo;t work you&rsquo;ll just have to
 scour the print out from <code>ifconfig</code> or <code>ip addr show</code> for your Nano&rsquo;s IP.
 I commented the command below so you can adjust as needed.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># Show wlan0 portion of IP |</span>
-<span style="color:#75715e"># grep &#39;inet &#39; line |</span>
-<span style="color:#75715e"># &#39;print&#39; the second element from matched &#39;inet &#39; grep |</span>
-<span style="color:#75715e"># split string: return 1st element after spliting on delimiter &#39;/&#39;</span>
-ip addr show wlan0 | grep <span style="color:#e6db74">&#39;inet &#39;</span> | awk <span style="color:#e6db74">&#39;{print $2}&#39;</span> | cut -f1 -d<span style="color:#e6db74">&#39;/&#39;</span></code></pre></div>
-<p>After you get the IP, go to your work station
+<div class="highlight"><pre tabindex="0" style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># Show wlan0 portion of IP |</span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># grep &#39;inet &#39; line |</span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># &#39;print&#39; the second element from matched &#39;inet &#39; grep |</span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># split string: return 1st element after spliting on delimiter &#39;/&#39;</span>
+</span></span><span style="display:flex;"><span>ip addr show wlan0 | grep <span style="color:#ba2121">&#39;inet &#39;</span> | awk <span style="color:#ba2121">&#39;{print $2}&#39;</span> | cut -f1 -d<span style="color:#ba2121">&#39;/&#39;</span>
+</span></span></code></pre></div><p>After you get the IP, go to your work station
 terminal and <code>ssh &lt;jeson_user_name&gt;@&lt;jetson_ip&gt;</code> and
 you should be all ready to develop remotely.</p>
-
 <h2 id="the-end">The end</h2>
-
 <p>Thanks for reading and feel free to comment or suggest corrections.</p>
-
 <p>And here&rsquo;s a list of sources that helped
 me bring all of this together:</p>
-
 <ul>
 <li><a href="https://devtalk.nvidia.com/default/topic/1049071/jetson-nano/pytorch-for-jetson-nano-version-1-3-0-now-available/">https://devtalk.nvidia.com/default/topic/1049071/jetson-nano/pytorch-for-jetson-nano-version-1-3-0-now-available/</a></li>
 <li><a href="https://www.zaferarican.com/post/transfer-learning-training-on-jetson-nano-with-pytorch">https://www.zaferarican.com/post/transfer-learning-training-on-jetson-nano-with-pytorch</a></li>
@@ -305,7 +287,7 @@ me bring all of this together:</p>
 <h2>Comments</h2>
 <div id="disqus_thread"></div>
 <script type="application/javascript">
-    var disqus_config = function () {
+    window.disqus_config = function () {
     
     
     

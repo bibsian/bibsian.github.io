@@ -6,11 +6,7 @@
     <description>Recent content in Posts on Andrew Bibian</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 05 Jan 2020 18:44:44 -0800</lastBuildDate>
-    
-	<atom:link href="https://bibsian.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 05 Jan 2020 18:44:44 -0800</lastBuildDate><atom:link href="https://bibsian.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Bayes Rule - An Example with Code</title>
       <link>https://bibsian.github.io/posts/bayes-rule/</link>
@@ -18,9 +14,8 @@
       
       <guid>https://bibsian.github.io/posts/bayes-rule/</guid>
       <description>In the interests of learning and developing a better sense on how to to use Bayes Rule we&amp;rsquo;re going to do two things in this post.
-1) We&amp;rsquo;re going use Bayes Rules to come up with an analytical solution to a probability problem (like you&amp;rsquo;d see in an interview setting).
-And
-2) We&amp;rsquo;ll simulate some data to see if we can approximate an analytical solution (to help develop our programming chops).</description>
+We&amp;rsquo;re going use Bayes Rules to come up with an analytical solution to a probability problem (like you&amp;rsquo;d see in an interview setting). And
+We&amp;rsquo;ll simulate some data to see if we can approximate an analytical solution (to help develop our programming chops). The Scenario Imagine you&amp;rsquo;re a patient who has just received a positive test result for HIV.</description>
     </item>
     
     <item>
@@ -39,10 +34,10 @@ And
       
       <guid>https://bibsian.github.io/posts/jupyter-setup/</guid>
       <description>Today we&amp;rsquo;re going to configure Jupyter notebooks so we can connect to our Nano over https. Note, this same logic could easily be applied to a server in the cloud.
-Prereqs/Assumptions  You will be doing this for Python3
- You already have your default python3 configured for virtualenvs
- You have created a virtualenv that we&amp;rsquo;ll install Jupyter &amp;amp; the Ipython kernel on.
- We&amp;rsquo;re doing this setup while we are sshed into the Nano (ssh &amp;lt;jetson name&amp;gt;@&amp;lt;jetson_ip&amp;gt;)</description>
+Prereqs/Assumptions You will be doing this for Python3
+You already have your default python3 configured for virtualenvs
+You have created a virtualenv that we&amp;rsquo;ll install Jupyter &amp;amp; the Ipython kernel on.
+We&amp;rsquo;re doing this setup while we are sshed into the Nano (ssh &amp;lt;jetson name&amp;gt;@&amp;lt;jetson_ip&amp;gt;)</description>
     </item>
     
     <item>

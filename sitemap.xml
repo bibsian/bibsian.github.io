@@ -1,48 +1,30 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
   <url>
     <loc>https://bibsian.github.io/</loc>
     <lastmod>2020-01-05T18:44:44-08:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bibsian.github.io/posts/bayes-rule/</loc>
     <lastmod>2020-01-05T18:44:44-08:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bibsian.github.io/posts/</loc>
     <lastmod>2020-01-05T18:44:44-08:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bibsian.github.io/posts/normal-equation/</loc>
     <lastmod>2019-12-15T11:06:54-08:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bibsian.github.io/posts/jupyter-setup/</loc>
     <lastmod>2019-11-17T13:44:36-08:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bibsian.github.io/posts/jetson-setup/</loc>
     <lastmod>2019-11-10T20:37:19-08:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bibsian.github.io/posts/first-post/</loc>
     <lastmod>2019-11-06T19:53:23-08:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bibsian.github.io/categories/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bibsian.github.io/tags/</loc>
   </url>
-  
 </urlset>
