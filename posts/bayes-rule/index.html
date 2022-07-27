@@ -52,14 +52,19 @@
     <div class="sidebar-about">
       <a href="https://bibsian.github.io/"><h1>Andrew Bibian</h1></a>
       <p class="lead">
-       This is my notebook for all things Data Science 
+       This is my notebook for Life ⋂ Data  
       </p>
     </div>
 
     <nav>
       <ul class="sidebar-nav">
         <li><a href="https://bibsian.github.io/">Home</a> </li>
-        <li><a href="https://github.com/bibsian/">
+        <li><a href="/posts/first-post/">
+	  
+          <i class="fas fa-male"></i>
+	  
+	  About Me
+	  </a></li><li><a href="https://github.com/bibsian/">
 	  
 	  <i class="fab fa-github"></i>
 	  
@@ -207,67 +212,67 @@ the central limit theorem).</li>
 </ol>
 <p>So, rather than expanding too much on the code, I&rsquo;ll leave it here
 with some comments.</p>
-<div class="highlight"><pre tabindex="0" style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#008000;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">joblib</span> <span style="color:#008000;font-weight:bold">import</span> Parallel, delayed
-</span></span><span style="display:flex;"><span><span style="color:#008000;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">numpy.random</span> <span style="color:#008000;font-weight:bold">import</span> binomial <span style="color:#008000;font-weight:bold">as</span> rbinom
-</span></span><span style="display:flex;"><span><span style="color:#008000;font-weight:bold">from</span> <span style="color:#00f;font-weight:bold">numpy</span> <span style="color:#008000;font-weight:bold">import</span> array, empty, isclose
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> joblib <span style="color:#f92672">import</span> Parallel, delayed
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> numpy.random <span style="color:#f92672">import</span> binomial <span style="color:#66d9ef">as</span> rbinom
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> numpy <span style="color:#f92672">import</span> array, empty, isclose
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># Our given data</span>
-</span></span><span style="display:flex;"><span>p_positive_g_hiv <span style="color:#666">=</span> <span style="color:#666">0.999</span>
-</span></span><span style="display:flex;"><span>p_hiv <span style="color:#666">=</span> <span style="color:#666">0.0001</span>
-</span></span><span style="display:flex;"><span>p_not_hiv <span style="color:#666">=</span> <span style="color:#666">1</span> <span style="color:#666">-</span> p_hiv
-</span></span><span style="display:flex;"><span>p_positive_g_not_hiv <span style="color:#666">=</span> <span style="color:#666">1</span><span style="color:#666">-</span>p_positive_g_hiv
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Our given data</span>
+</span></span><span style="display:flex;"><span>p_positive_g_hiv <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.999</span>
+</span></span><span style="display:flex;"><span>p_hiv <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0001</span>
+</span></span><span style="display:flex;"><span>p_not_hiv <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span> p_hiv
+</span></span><span style="display:flex;"><span>p_positive_g_not_hiv <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">-</span>p_positive_g_hiv
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># Patient population sample size</span>
-</span></span><span style="display:flex;"><span>hiv_ss <span style="color:#666">=</span> <span style="color:#666">2e6</span> <span style="color:#408080;font-style:italic"># 2 million</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Patient population sample size</span>
+</span></span><span style="display:flex;"><span>hiv_ss <span style="color:#f92672">=</span> <span style="color:#ae81ff">2e6</span> <span style="color:#75715e"># 2 million</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># How many &#39;simulations&#39; to run</span>
-</span></span><span style="display:flex;"><span>distr_ss <span style="color:#666">=</span> <span style="color:#666">400</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># How many &#39;simulations&#39; to run</span>
+</span></span><span style="display:flex;"><span>distr_ss <span style="color:#f92672">=</span> <span style="color:#ae81ff">400</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">sample</span>(pop_ss<span style="color:#666">=</span>hiv_ss):
-</span></span><span style="display:flex;"><span>    <span style="color:#ba2121">&#34;&#34;&#34; 
-</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">    Function to simulate and estimate a single mean for the P(HIV|+).
-</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">
-</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">    :param pop_ss: Sample size of the population we&#39;re simulating
-</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">    i.e. how many people are we testing for HIV &amp; testing
-</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">    :type pop_ss: int
-</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">    &#34;&#34;&#34;</span>
-</span></span><span style="display:flex;"><span>    hiv <span style="color:#666">=</span> rbinom(<span style="color:#666">1</span>, p_hiv, <span style="color:#008000">int</span>(pop_ss)) 
-</span></span><span style="display:flex;"><span>    test <span style="color:#666">=</span> empty(<span style="color:#008000">int</span>(pop_ss))
-</span></span><span style="display:flex;"><span>    test[hiv<span style="color:#666">==</span><span style="color:#666">0</span>] <span style="color:#666">=</span> rbinom(<span style="color:#666">1</span>, p_positive_g_not_hiv, test[hiv<span style="color:#666">==</span><span style="color:#666">0</span>]<span style="color:#666">.</span>shape)
-</span></span><span style="display:flex;"><span>    test[hiv<span style="color:#666">==</span><span style="color:#666">1</span>] <span style="color:#666">=</span> rbinom(<span style="color:#666">1</span>, p_positive_g_hiv, test[hiv<span style="color:#666">==</span><span style="color:#666">1</span>]<span style="color:#666">.</span>shape)
-</span></span><span style="display:flex;"><span>    <span style="color:#008000;font-weight:bold">return</span> hiv[test<span style="color:#666">==</span><span style="color:#666">1</span>]<span style="color:#666">.</span>mean()
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">sample</span>(pop_ss<span style="color:#f92672">=</span>hiv_ss):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34; 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    Function to simulate and estimate a single mean for the P(HIV|+).
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    :param pop_ss: Sample size of the population we&#39;re simulating
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    i.e. how many people are we testing for HIV &amp; testing
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    :type pop_ss: int
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    hiv <span style="color:#f92672">=</span> rbinom(<span style="color:#ae81ff">1</span>, p_hiv, int(pop_ss)) 
+</span></span><span style="display:flex;"><span>    test <span style="color:#f92672">=</span> empty(int(pop_ss))
+</span></span><span style="display:flex;"><span>    test[hiv<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> rbinom(<span style="color:#ae81ff">1</span>, p_positive_g_not_hiv, test[hiv<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>shape)
+</span></span><span style="display:flex;"><span>    test[hiv<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> rbinom(<span style="color:#ae81ff">1</span>, p_positive_g_hiv, test[hiv<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>shape)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> hiv[test<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>mean()
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">run_parallel</span>(func, n_runs, n_jobs<span style="color:#666">=</span><span style="color:#666">4</span>):
-</span></span><span style="display:flex;"><span>    <span style="color:#ba2121">&#34;&#34;&#34;
-</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">    Wrapper for parallel processing a function 
-</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">    (with default args/kwargs).
-</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">
-</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">    :param func: Function to parallel process
-</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">    :type func: func
-</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">    :param n_runs: Number of times to execute function
-</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">    :type n_runs: int
-</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">    :param n_jobs: Number of cores to use
-</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">    :type n_jobs: int
-</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">    &#34;&#34;&#34;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#008000;font-weight:bold">return</span> array(
-</span></span><span style="display:flex;"><span>        Parallel(n_jobs<span style="color:#666">=</span>n_jobs)(delayed(func)()
-</span></span><span style="display:flex;"><span>        <span style="color:#008000;font-weight:bold">for</span> _ <span style="color:#a2f;font-weight:bold">in</span> <span style="color:#008000">range</span>(distr_ss))
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">run_parallel</span>(func, n_runs, n_jobs<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    Wrapper for parallel processing a function 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    (with default args/kwargs).
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    :param func: Function to parallel process
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    :type func: func
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    :param n_runs: Number of times to execute function
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    :type n_runs: int
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    :param n_jobs: Number of cores to use
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    :type n_jobs: int
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> array(
+</span></span><span style="display:flex;"><span>        Parallel(n_jobs<span style="color:#f92672">=</span>n_jobs)(delayed(func)()
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(distr_ss))
 </span></span><span style="display:flex;"><span>    )
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># Took about 24s on my 2015 macbook air</span>
-</span></span><span style="display:flex;"><span>distr <span style="color:#666">=</span> run_parallel(func<span style="color:#666">=</span>sample, n_runs<span style="color:#666">=</span>distr_ss)
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Took about 24s on my 2015 macbook air</span>
+</span></span><span style="display:flex;"><span>distr <span style="color:#f92672">=</span> run_parallel(func<span style="color:#f92672">=</span>sample, n_runs<span style="color:#f92672">=</span>distr_ss)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># Check our approximation to the real answer</span>
-</span></span><span style="display:flex;"><span>p_test_postive <span style="color:#666">=</span> p_positive_g_hiv<span style="color:#666">*</span>p_hiv <span style="color:#666">+</span> p_positive_g_not_hiv<span style="color:#666">*</span>p_not_hiv
-</span></span><span style="display:flex;"><span>p_hiv_g_positive <span style="color:#666">=</span> (p_positive_g_hiv<span style="color:#666">*</span>p_hiv)<span style="color:#666">/</span>p_test_postive
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Check our approximation to the real answer</span>
+</span></span><span style="display:flex;"><span>p_test_postive <span style="color:#f92672">=</span> p_positive_g_hiv<span style="color:#f92672">*</span>p_hiv <span style="color:#f92672">+</span> p_positive_g_not_hiv<span style="color:#f92672">*</span>p_not_hiv
+</span></span><span style="display:flex;"><span>p_hiv_g_positive <span style="color:#f92672">=</span> (p_positive_g_hiv<span style="color:#f92672">*</span>p_hiv)<span style="color:#f92672">/</span>p_test_postive
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#008000;font-weight:bold">assert</span> isclose(
-</span></span><span style="display:flex;"><span>       distr<span style="color:#666">.</span>mean(),
-</span></span><span style="display:flex;"><span>       p_hiv_g_positive, atol<span style="color:#666">=</span><span style="color:#666">0.001</span>
-</span></span><span style="display:flex;"><span>), <span style="color:#ba2121">&#34;Not a good approximation&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">assert</span> isclose(
+</span></span><span style="display:flex;"><span>       distr<span style="color:#f92672">.</span>mean(),
+</span></span><span style="display:flex;"><span>       p_hiv_g_positive, atol<span style="color:#f92672">=</span><span style="color:#ae81ff">0.001</span>
+</span></span><span style="display:flex;"><span>), <span style="color:#e6db74">&#34;Not a good approximation&#34;</span>
 </span></span></code></pre></div><p>So there we have it.
 In the image below I&rsquo;ve visualized the distrubtion of means we created
 from the code above. The true probability is marked
