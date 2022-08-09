@@ -3,12 +3,27 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://bibsian.github.io/</loc>
-    <lastmod>2020-01-05T18:44:44-08:00</lastmod>
+    <lastmod>2022-07-27T21:27:22-07:00</lastmod>
   </url><url>
-    <loc>https://bibsian.github.io/posts/bayes-rule/</loc>
-    <lastmod>2020-01-05T18:44:44-08:00</lastmod>
+    <loc>https://bibsian.github.io/posts/the-biz-and-the-data/</loc>
+    <lastmod>2022-07-27T21:27:22-07:00</lastmod>
+  </url><url>
+    <loc>https://bibsian.github.io/tags/data-and-the-biz/</loc>
+    <lastmod>2022-07-27T21:27:22-07:00</lastmod>
+  </url><url>
+    <loc>https://bibsian.github.io/tags/data-strategy/</loc>
+    <lastmod>2022-07-27T21:27:22-07:00</lastmod>
   </url><url>
     <loc>https://bibsian.github.io/posts/</loc>
+    <lastmod>2022-07-27T21:27:22-07:00</lastmod>
+  </url><url>
+    <loc>https://bibsian.github.io/tags/short-short-course/</loc>
+    <lastmod>2022-07-27T21:27:22-07:00</lastmod>
+  </url><url>
+    <loc>https://bibsian.github.io/tags/</loc>
+    <lastmod>2022-07-27T21:27:22-07:00</lastmod>
+  </url><url>
+    <loc>https://bibsian.github.io/posts/bayes-rule/</loc>
     <lastmod>2020-01-05T18:44:44-08:00</lastmod>
   </url><url>
     <loc>https://bibsian.github.io/posts/normal-equation/</loc>
@@ -25,6 +40,6 @@
   </url><url>
     <loc>https://bibsian.github.io/categories/</loc>
   </url><url>
-    <loc>https://bibsian.github.io/tags/</loc>
+    <loc>https://bibsian.github.io/series/</loc>
   </url>
 </urlset>
