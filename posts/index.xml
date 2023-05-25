@@ -8,13 +8,12 @@
     <language>en-us</language>
     <lastBuildDate>Wed, 27 Jul 2022 21:27:22 -0700</lastBuildDate><atom:link href="https://bibsian.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Data Stragety - 201</title>
+      <title>Data Stragety - 201: Requirements Gathering</title>
       <link>https://bibsian.github.io/posts/the-biz-and-the-data/</link>
       <pubDate>Wed, 27 Jul 2022 21:27:22 -0700</pubDate>
       
       <guid>https://bibsian.github.io/posts/the-biz-and-the-data/</guid>
-      <description>Metrics - Short Short Course These questions should be applied to all metrics in my opinion; metrics for various subsystem&amp;rsquo;s performance, business metrics, product metrics, etc.
-Always ask yourself the following: What am I trying to measure and how can I describe &amp;amp; communicate it? What does it mean from the perspectives of others e.g. the user&amp;rsquo;s view, your data, web, and business team&amp;rsquo;s view, etc.? Can I measure it accurately?</description>
+      <description>&amp;ldquo;Short Short Courses&amp;rdquo; are questions meant to prompt the reader to think and reflect. In my time as a tech lead I&amp;rsquo;ve found that asking questions is far more important than laying out answers. Imagine you&amp;rsquo;re in a meeting with your team and someone asks these questions of you, would you have a good answer? And if you don&amp;rsquo;t have good answers, now is your chance to start asking these questions.</description>
     </item>
     
     <item>
