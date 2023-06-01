@@ -127,66 +127,66 @@ for it to work properly.</p>
 you&rsquo;re going to install Jupyter and Ipython on. We&rsquo;ll also install
 some packages that matplotlib requires and another package
 for parsing json with bash.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># VENV you&#39;re using to install with</span>
-</span></span><span style="display:flex;"><span>VENV<span style="color:#f92672">=</span>pytorch <span style="color:#75715e"># my virtualenv</span>
+<div class="highlight"><pre tabindex="0" style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># VENV you&#39;re using to install with</span>
+</span></span><span style="display:flex;"><span><span style="color:#19177c">VENV</span><span style="color:#666">=</span>pytorch <span style="color:#408080;font-style:italic"># my virtualenv</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>workon $VENV <span style="color:#f92672">&amp;&amp;</span> echo <span style="color:#e6db74">&#34;Working on </span>$VENV<span style="color:#e6db74"> virtual environment&#34;</span>
+</span></span><span style="display:flex;"><span>workon <span style="color:#19177c">$VENV</span> <span style="color:#666">&amp;&amp;</span> <span style="color:#008000">echo</span> <span style="color:#ba2121">&#34;Working on </span><span style="color:#19177c">$VENV</span><span style="color:#ba2121"> virtual environment&#34;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#39;Installing dependencies for matplotlib &amp; json parsing in bash&#39;</span>
-</span></span><span style="display:flex;"><span>sudo apt update <span style="color:#ae81ff">\
-</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#f92672">&amp;&amp;</span> sudo apt install -y libfreetype6-dev pkg-config libpng-dev jq
+</span></span><span style="display:flex;"><span><span style="color:#008000">echo</span> <span style="color:#ba2121">&#39;Installing dependencies for matplotlib &amp; json parsing in bash&#39;</span>
+</span></span><span style="display:flex;"><span>sudo apt update <span style="color:#b62;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#b62;font-weight:bold"></span><span style="color:#666">&amp;&amp;</span> sudo apt install -y libfreetype6-dev pkg-config libpng-dev jq
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#39;Pip installing jupyter, matplotlib, ipython kernal&#39;</span>
-</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;which pip3 == </span><span style="color:#66d9ef">$(</span>which pip3<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#008000">echo</span> <span style="color:#ba2121">&#39;Pip installing jupyter, matplotlib, ipython kernal&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#008000">echo</span> <span style="color:#ba2121">&#34;which pip3 == </span><span style="color:#008000;font-weight:bold">$(</span>which pip3<span style="color:#008000;font-weight:bold">)</span><span style="color:#ba2121">&#34;</span>
 </span></span><span style="display:flex;"><span>pip3 install jupyter matplotlib ipykernel
 </span></span></code></pre></div><h3 id="creating-https-certificates">Creating https certificates</h3>
 <p>Next, you&rsquo;ll need to create some certificate files for https authentication.
 I posted the link to a git issue that came up while installing;
 the openssl command below is different from the <a href="https://jupyter-notebook.readthedocs.io/en/stable/public_server.html">ipython docs</a>
 because of the git issue so feel free to read about it there.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd $HOME
+<div class="highlight"><pre tabindex="0" style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#008000">cd</span> <span style="color:#19177c">$HOME</span>
 </span></span><span style="display:flex;"><span>mkdir certs
-</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Certificat directory at </span>$HOME<span style="color:#e6db74">/certs&#34;</span>
-</span></span><span style="display:flex;"><span>cd certs
-</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;Configuring openssl&#34;</span>|  
+</span></span><span style="display:flex;"><span><span style="color:#008000">echo</span> <span style="color:#ba2121">&#34;Certificat directory at </span><span style="color:#19177c">$HOME</span><span style="color:#ba2121">/certs&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#008000">cd</span> certs
+</span></span><span style="display:flex;"><span><span style="color:#008000">echo</span> <span style="color:#ba2121">&#34;Configuring openssl&#34;</span>|  
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># https://github.com/jupyter/notebook/issues/507#issuecomment-145390380</span>
-</span></span><span style="display:flex;"><span>sudo openssl req -x509 -nodes -days <span style="color:#ae81ff">365</span> -newkey rsa:2048 -keyout mycert.pem -out mycert.pem
-</span></span><span style="display:flex;"><span>sudo chown $USER:$USER $HOME/certs/mycert.pem
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># https://github.com/jupyter/notebook/issues/507#issuecomment-145390380</span>
+</span></span><span style="display:flex;"><span>sudo openssl req -x509 -nodes -days <span style="color:#666">365</span> -newkey rsa:2048 -keyout mycert.pem -out mycert.pem
+</span></span><span style="display:flex;"><span>sudo chown <span style="color:#19177c">$USER</span>:<span style="color:#19177c">$USER</span> <span style="color:#19177c">$HOME</span>/certs/mycert.pem
 </span></span></code></pre></div><h3 id="notebook-configuration">Notebook configuration</h3>
 <p>Now we&rsquo;ll generate our jupyter notebook configuration and update it
 with our password and a few other settings.</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>jupyter notebook --generate-config
-</span></span><span style="display:flex;"><span>jupyter notebook password <span style="color:#75715e"># enter password on promt</span>
-</span></span><span style="display:flex;"><span>sudo chown $USER:$USER $HOME/.jupyter <span style="color:#75715e">#change ownership for file prepending</span>
+<div class="highlight"><pre tabindex="0" style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>jupyter notebook --generate-config
+</span></span><span style="display:flex;"><span>jupyter notebook password <span style="color:#408080;font-style:italic"># enter password on promt</span>
+</span></span><span style="display:flex;"><span>sudo chown <span style="color:#19177c">$USER</span>:<span style="color:#19177c">$USER</span> <span style="color:#19177c">$HOME</span>/.jupyter <span style="color:#408080;font-style:italic">#change ownership for file prepending</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>JUPYTER_CONFIG_FILE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$HOME<span style="color:#e6db74">/.jupyter/jupyter_notebook_config.py&#34;</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Parses password from json</span>
-</span></span><span style="display:flex;"><span>JUPYTER_PWD<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>sudo jq <span style="color:#e6db74">&#39;.NotebookApp.password&#39;</span> $HOME/.jupyter/jupyter_notebook_config.json<span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#19177c">JUPYTER_CONFIG_FILE</span><span style="color:#666">=</span><span style="color:#ba2121">&#34;</span><span style="color:#19177c">$HOME</span><span style="color:#ba2121">/.jupyter/jupyter_notebook_config.py&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># Parses password from json</span>
+</span></span><span style="display:flex;"><span><span style="color:#19177c">JUPYTER_PWD</span><span style="color:#666">=</span><span style="color:#008000;font-weight:bold">$(</span>sudo jq <span style="color:#ba2121">&#39;.NotebookApp.password&#39;</span> <span style="color:#19177c">$HOME</span>/.jupyter/jupyter_notebook_config.json<span style="color:#008000;font-weight:bold">)</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Configuration string</span>
-</span></span><span style="display:flex;"><span>JUPYTER_CONFIG_UPDATE<span style="color:#f92672">=</span><span style="color:#ae81ff">\
-</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span><span style="color:#e6db74">&#34;c = get_config()
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># Inline plotting
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">c.IPKernelApp.pylab = &#39;inline&#39;
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># Notebook config
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">c.NotebookApp.certfile = u&#39;</span>$HOME<span style="color:#e6db74">/certs/mycert.pem&#39; #location of your certificate file
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">c.NotebookApp.ip = &#39;0.0.0.0&#39;
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">c.NotebookApp.open_browser = False  #so that the ipython notebook does not opens up a browser by default
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">c.NotebookApp.password = u</span>$JUPYTER_PWD<span style="color:#e6db74">  #the encrypted password we generated above
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># Set the port to 8888
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">c.NotebookApp.port = 8888
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"># Configuration file for jupyter-notebook.
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">c.Notebook.allow_origin=&#39;*&#39;
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">c.InteractiveShellApp.extensions = [&#39;autoreload&#39;]
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">c.InteractiveShellApp.exec_lines = [&#39;%autoreload 2&#39;]&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># Configuration string</span>
+</span></span><span style="display:flex;"><span><span style="color:#19177c">JUPYTER_CONFIG_UPDATE</span><span style="color:#666">=</span><span style="color:#b62;font-weight:bold">\
+</span></span></span><span style="display:flex;"><span><span style="color:#b62;font-weight:bold"></span><span style="color:#ba2121">&#34;c = get_config()
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121"># Inline plotting
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">c.IPKernelApp.pylab = &#39;inline&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121"># Notebook config
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">c.NotebookApp.certfile = u&#39;</span><span style="color:#19177c">$HOME</span><span style="color:#ba2121">/certs/mycert.pem&#39; #location of your certificate file
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">c.NotebookApp.ip = &#39;0.0.0.0&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">c.NotebookApp.open_browser = False  #so that the ipython notebook does not opens up a browser by default
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">c.NotebookApp.password = u</span><span style="color:#19177c">$JUPYTER_PWD</span><span style="color:#ba2121">  #the encrypted password we generated above
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121"># Set the port to 8888
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">c.NotebookApp.port = 8888
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121"># Configuration file for jupyter-notebook.
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">c.Notebook.allow_origin=&#39;*&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">c.InteractiveShellApp.extensions = [&#39;autoreload&#39;]
+</span></span></span><span style="display:flex;"><span><span style="color:#ba2121">c.InteractiveShellApp.exec_lines = [&#39;%autoreload 2&#39;]&#34;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Concat config string with original file and update config file</span>
-</span></span><span style="display:flex;"><span>sudo printf <span style="color:#e6db74">&#39;%s\n%s\n&#39;</span> <span style="color:#e6db74">&#34;</span>$JUPYTER_CONFIG_UPDATE<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>sudo cat $JUPYTER_CONFIG_FILE<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> &gt; $JUPYTER_CONFIG_FILE
+</span></span><span style="display:flex;"><span><span style="color:#408080;font-style:italic"># Concat config string with original file and update config file</span>
+</span></span><span style="display:flex;"><span>sudo <span style="color:#008000">printf</span> <span style="color:#ba2121">&#39;%s\n%s\n&#39;</span> <span style="color:#ba2121">&#34;</span><span style="color:#19177c">$JUPYTER_CONFIG_UPDATE</span><span style="color:#ba2121">&#34;</span> <span style="color:#ba2121">&#34;</span><span style="color:#008000;font-weight:bold">$(</span>sudo cat <span style="color:#19177c">$JUPYTER_CONFIG_FILE</span><span style="color:#008000;font-weight:bold">)</span><span style="color:#ba2121">&#34;</span> &gt; <span style="color:#19177c">$JUPYTER_CONFIG_FILE</span>
 </span></span></code></pre></div><h3 id="test-it-out">Test it out</h3>
 <p>After you&rsquo;ve run all the code above you should be able to start the
 kernel with <code>jupyter notebook</code> and head over to <code>https://&lt;JETSON_IP&gt;:8888</code>
