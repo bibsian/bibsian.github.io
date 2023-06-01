@@ -2,8 +2,29 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://bibsian.github.io/posts/what-ifs/</loc>
+    <lastmod>2023-05-31T15:12:11-07:00</lastmod>
+  </url><url>
+    <loc>https://bibsian.github.io/tags/analytics/</loc>
+    <lastmod>2023-05-31T15:12:11-07:00</lastmod>
+  </url><url>
     <loc>https://bibsian.github.io/</loc>
-    <lastmod>2022-07-27T21:27:22-07:00</lastmod>
+    <lastmod>2023-05-31T15:12:11-07:00</lastmod>
+  </url><url>
+    <loc>https://bibsian.github.io/tags/counterfactuals/</loc>
+    <lastmod>2023-05-31T15:12:11-07:00</lastmod>
+  </url><url>
+    <loc>https://bibsian.github.io/tags/data-strategy/</loc>
+    <lastmod>2023-05-31T15:12:11-07:00</lastmod>
+  </url><url>
+    <loc>https://bibsian.github.io/tags/inference/</loc>
+    <lastmod>2023-05-31T15:12:11-07:00</lastmod>
+  </url><url>
+    <loc>https://bibsian.github.io/posts/</loc>
+    <lastmod>2023-05-31T15:12:11-07:00</lastmod>
+  </url><url>
+    <loc>https://bibsian.github.io/tags/</loc>
+    <lastmod>2023-05-31T15:12:11-07:00</lastmod>
   </url><url>
     <loc>https://bibsian.github.io/posts/the-biz-and-the-data/</loc>
     <lastmod>2022-07-27T21:27:22-07:00</lastmod>
@@ -11,16 +32,7 @@
     <loc>https://bibsian.github.io/tags/data-and-the-biz/</loc>
     <lastmod>2022-07-27T21:27:22-07:00</lastmod>
   </url><url>
-    <loc>https://bibsian.github.io/tags/data-strategy/</loc>
-    <lastmod>2022-07-27T21:27:22-07:00</lastmod>
-  </url><url>
-    <loc>https://bibsian.github.io/posts/</loc>
-    <lastmod>2022-07-27T21:27:22-07:00</lastmod>
-  </url><url>
     <loc>https://bibsian.github.io/tags/short-short-course/</loc>
-    <lastmod>2022-07-27T21:27:22-07:00</lastmod>
-  </url><url>
-    <loc>https://bibsian.github.io/tags/</loc>
     <lastmod>2022-07-27T21:27:22-07:00</lastmod>
   </url><url>
     <loc>https://bibsian.github.io/posts/bayes-rule/</loc>
