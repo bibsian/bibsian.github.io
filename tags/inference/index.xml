@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>inference on Andrew Bibian</title>
+    <link>https://bibsian.github.io/tags/inference/</link>
+    <description>Recent content in inference on Andrew Bibian</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 31 May 2023 15:12:11 -0700</lastBuildDate><atom:link href="https://bibsian.github.io/tags/inference/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Analtyical Reasoning with &#39;What If&#39; Scenarios</title>
+      <link>https://bibsian.github.io/posts/what-ifs/</link>
+      <pubDate>Wed, 31 May 2023 15:12:11 -0700</pubDate>
+      
+      <guid>https://bibsian.github.io/posts/what-ifs/</guid>
+      <description>One of the most insightful blogs I&amp;rsquo;ve ever read was Tim Vieira&amp;rsquo;s post on &amp;ldquo;Counterfactual Reasoning and Learning from Logged Data&amp;rdquo;; I highly recommend it to anyone interested in reinforcement learning and policy optimization techniques. That said, with this post here, I hope to distill some wisdom that analyst and app developers can use to improve their platform&amp;rsquo;s engagement.
+For those unfamiliar with the concept of counterfactuals, you can think of them as data that would have arisen under an alternative scenario i.</description>
+    </item>
+    
+  </channel>
+</rss>

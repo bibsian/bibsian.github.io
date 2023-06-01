@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>analytics on Andrew Bibian</title>
+    <link>https://bibsian.github.io/tags/analytics/</link>
+    <description>Recent content in analytics on Andrew Bibian</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 31 May 2023 15:12:11 -0700</lastBuildDate><atom:link href="https://bibsian.github.io/tags/analytics/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Analtyical Reasoning with &#39;What If&#39; Scenarios</title>
+      <link>https://bibsian.github.io/posts/what-ifs/</link>
+      <pubDate>Wed, 31 May 2023 15:12:11 -0700</pubDate>
+      
+      <guid>https://bibsian.github.io/posts/what-ifs/</guid>
+      <description>One of the most insightful blogs I&amp;rsquo;ve ever read was Tim Vieira&amp;rsquo;s post on &amp;ldquo;Counterfactual Reasoning and Learning from Logged Data&amp;rdquo;; I highly recommend it to anyone interested in reinforcement learning and policy optimization techniques. That said, with this post here, I hope to distill some wisdom that analyst and app developers can use to improve their platform&amp;rsquo;s engagement.
+For those unfamiliar with the concept of counterfactuals, you can think of them as data that would have arisen under an alternative scenario i.</description>
+    </item>
+    
+    <item>
+      <title>Data Strategy - 201: Requirements Gathering</title>
+      <link>https://bibsian.github.io/posts/the-biz-and-the-data/</link>
+      <pubDate>Wed, 27 Jul 2022 21:27:22 -0700</pubDate>
+      
+      <guid>https://bibsian.github.io/posts/the-biz-and-the-data/</guid>
+      <description>&amp;ldquo;Short Short Courses&amp;rdquo; are questions meant to prompt the reader to think and reflect. In my time as a tech lead I&amp;rsquo;ve found that asking questions is far more important than laying out answers. Imagine you&amp;rsquo;re in a meeting with your team and someone asks these questions of you, would you have a good answer? And if you don&amp;rsquo;t have good answers, now is your chance to start asking these questions.</description>
+    </item>
+    
+  </channel>
+</rss>

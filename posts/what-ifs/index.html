@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.112.0">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Analtyical Reasoning with &#39;What If&#39; Scenarios &middot; Andrew Bibian</title>
+  <meta name="description" content="" />
+
+  
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/hyde.css">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/all.css">
+  <script defer src="https://bibsian.github.io/js/all.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/x-mathjax-config">
+   MathJax.Hub.Config(
+       {
+           tex2jax: {
+               inlineMath: [["$","$"],["\\(","\\)"]],
+               displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+               processEscapes: false
+           }
+       }
+   )
+  </script>
+  <script type="text/x-mathjax-config">
+   MathJax.Hub.Config({ TeX: { extensions: ["color.js"] }});
+  </script>
+
+  
+  
+</head>
+
+  <body class="theme-base-08 ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://bibsian.github.io/"><h1>Andrew Bibian</h1></a>
+      <p class="lead">
+       This is my notebook for Life ⋂ Data  
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://bibsian.github.io/">Home</a> </li>
+        <li><a href="/posts/first-post/">
+	  
+          <i class="fas fa-male"></i>
+	  
+	  About Me
+	  </a></li><li><a href="https://github.com/bibsian/">
+	  
+	  <i class="fab fa-github"></i>
+	  
+	  Github
+	  </a></li><li><a href="https://www.linkedin.com/in/andrewjamesbibian/">
+	  
+	  <i class="fab fa-linkedin"></i>
+          
+	  LinkedIn
+	  </a></li><li><a href="/static/files/abibian-resume-2023.pdf">
+	  
+          <i class="fas fa-file-pdf"></i>
+	  
+	  Resume
+	  </a></li>
+      </ul>
+    </nav>
+
+    <p>&copy; 2023. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Analtyical Reasoning with &#39;What If&#39; Scenarios</h1>
+  <time datetime=2023-05-31T15:12:11-0700
+	class="post-date">Wed, May 31, 2023</time>
+  
+ 
+<style type="text/css">
+ul.tagsNav { 
+  display: inline-block;
+  margin-inline: 40px;
+  font-size: 23px;
+  padding: 2px;
+}
+li.tagsNav {
+  display: inline;
+  padding: 2px;
+  font-size: 20px;
+}
+li.tagsNav:after {
+  content: " \00b7 "
+}
+li.tagsNav:last-child:after {
+  content: "";
+}
+h4.subHeader {
+  font-size: 20px;
+}
+</style>
+
+<h4 class="subHeader">Tags:</h4>
+<ul class="tagsNav" id="tags">
+   <li class="tagsNav">
+    <a href="https://bibsian.github.io/tags/data-strategy/">data-strategy</a>
+  </li> <li class="tagsNav">
+    <a href="https://bibsian.github.io/tags/analytics/">analytics</a>
+  </li> <li class="tagsNav">
+    <a href="https://bibsian.github.io/tags/counterfactuals/">counterfactuals</a>
+  </li> <li class="tagsNav">
+    <a href="https://bibsian.github.io/tags/inference/">inference</a>
+  </li></ul>
+
+
+  <p>One of the most insightful blogs I&rsquo;ve ever read was <a href="https://gist.github.com/timvieira">Tim Vieira&rsquo;s</a>
+post on
+<a href="https://timvieira.github.io/blog/post/2016/12/19/counterfactual-reasoning-and-learning-from-logged-data/">&ldquo;Counterfactual Reasoning and Learning from Logged Data&rdquo;</a>; I highly recommend it to
+anyone interested in reinforcement learning and policy optimization techniques. That said, with this
+post here, I hope to distill some wisdom that analyst and app developers can use to improve
+their platform&rsquo;s engagement.</p>
+<p>For those unfamiliar with the concept of counterfactuals, you can think of them as
+data that would have arisen under an alternative scenario i.e. &ldquo;what if scenarios&rdquo;. By the end of
+this read I&rsquo;m wishful that you&rsquo;ll have a reasonable foundation for how one can go about thinking
+in terms of counterfactuals, inspiring you to reason about your
+system from a different perspective and experiment a little with some of your metrics and mappings.</p>
+<h1 id="reasoning-about-your-data">Reasoning about your data</h1>
+<p>In order to develop a sense of reasoning with counterfactuals we have to share an understanding of the
+type of data we&rsquo;re applying our logic onto. Note, what I outline below is just one method of
+constructing counterfactuals, many methods exists and it is an active area of research.</p>
+<p>Now, say you maintain a content feed where a user can scroll $N$ slots. And let&rsquo;s imagine that
+for some set spacing, $S$, you inject a &ldquo;nudge&rdquo; to jump to a different part of the platform,
+say, every 3 cards you &ldquo;nudge&rdquo; the user to go elsewhere. Some users will scroll past it, click it,
+never see it, or never even scroll depending on how your feed is structured.</p>
+<p>With a bit clean up, your logged data will have the format of &rsquo;events&rsquo; as integers
+interspersed with &ldquo;nudge&rdquo; instances; in the diagram below squares represent
+&ldquo;content slots&rdquo; for &rsquo;events&rsquo; and the &ldquo;nudge&rdquo; component is labeled with a purple star.</p>
+<h2 id="the-logged-data">The Logged Data</h2>
+<p><img src="/posts/imgs/cfs/logged_data_new.png" alt="LoggedData"></p>
+<p>Given this data, if you&rsquo;ve made your feed flexible and configurable then you can imagine this instance
+of logged data is just ONE set of information from your users; just imagine all the counterfactual
+scenarios you COULD have recorded data for IF the instance spacing, $S$, between your &ldquo;nudges&rdquo;
+were different.</p>
+<p>What if your &ldquo;nudge&rdquo; instance spacing shrank, started at a different slot,
+had staggard spacing? With your historical data, and assuming* your
+analytics for CTRs are constant, mapping these counterfactual scenarios
+would lead to different counts of &ldquo;nudges&rdquo; and overall counts of engagements on your platform.</p>
+<p>The nifty thing about these observed events under the historical spacing is that
+we can easily map those events into these counterfactual scenarios with a clever mapping!</p>
+<h2 id="a-counterfactual-mapping">A Counterfactual Mapping</h2>
+<p>While the details for generating counterfactual mappings differ depending on
+what scenarios you&rsquo;re considering and your system, you can see in the diagram below an infinite number
+of counterfactual scenarios are possible. You simply have to think in terms of what is the
+immutable set of information in a confirable platform. That is, &rsquo;events&rsquo; are the constant set
+and new mappings of &ldquo;nudges&rdquo; can be create by attaching &ldquo;nudge&rdquo; instances inbetween events
+at different configurations i.e. changing your instance spacing, $S$.
+<img src="/posts/imgs/cfs/mappings.png" alt="Mappings"></p>
+<p>This clever mapping is a nifty perspective that enables counterfactual reasoning. With it you
+can set up a slew of testable hypothesis for maximizing your platforms engagement; just think,
+&ldquo;what if&rdquo; we put &ldquo;nudges&rdquo; here, would that placement even be worth the experimentation time, all
+else constant? That said, don&rsquo;t forgot to factor in different user segements.</p>
+<h2 id="concluding-remarks">Concluding Remarks</h2>
+<p>While it may seem like counterfactual scenarios are a space of inifinite possiblities,
+any good data practitioner would consider the asssumptions we made generating these
+counterfatual analytics.</p>
+<p>For one, a &ldquo;constant CTR&rdquo; in a counterfactual space may be implausible, however,
+this assumption gives you a hypothesis which you can A/B test and truly assess the limits of
+your systems.</p>
+<p>I hope you enjoyed the read and welcome to the world of counterfactual reasoning!!!</p>
+<h3 id="other-useful-links">Other useful links</h3>
+<ul>
+<li><a href="https://arxiv.org/abs/1209.2355">Bouttou et al.&rsquo;s</a> fantastic arxiv read; this really drives home
+the importance of having a structural causal model for your system to experiment with.</li>
+</ul>
+
+</div>
+
+<h2>Comments</h2>
+<div id="disqus_thread"></div>
+<script type="application/javascript">
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "spf13" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </main>
+
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-153110440-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </body>
+</html>
