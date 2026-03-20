@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.112.0">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Feature Engineering for Maching Learning - Post 1 of 7 &middot; Andrew Bibian</title>
+  <meta name="description" content="" />
+
+  
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/hyde.css">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/all.css">
+  <script defer src="https://bibsian.github.io/js/all.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/x-mathjax-config">
+   MathJax.Hub.Config(
+       {
+           tex2jax: {
+               inlineMath: [["$","$"],["\\(","\\)"]],
+               displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+               processEscapes: false
+           }
+       }
+   )
+  </script>
+  <script type="text/x-mathjax-config">
+   MathJax.Hub.Config({ TeX: { extensions: ["color.js"] }});
+  </script>
+
+  
+  
+</head>
+
+  <body class="theme-base-08 ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://bibsian.github.io/"><h1>Andrew Bibian</h1></a>
+      <p class="lead">
+       This is my notebook for Life ⋂ Data  
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://bibsian.github.io/">Home</a> </li>
+        <li><a href="/posts/first-post/">
+	  
+          <i class="fas fa-male"></i>
+	  
+	  About Me
+	  </a></li><li><a href="https://github.com/bibsian/">
+	  
+	  <i class="fab fa-github"></i>
+	  
+	  Github
+	  </a></li><li><a href="https://www.linkedin.com/in/andrewjamesbibian/">
+	  
+	  <i class="fab fa-linkedin"></i>
+          
+	  LinkedIn
+	  </a></li><li><a href="/static/files/abibian-resume-2026.pdf">
+	  
+          <i class="fas fa-file-pdf"></i>
+	  
+	  Resume
+	  </a></li>
+      </ul>
+    </nav>
+
+    <p>&copy; 2026. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Feature Engineering for Maching Learning - Post 1 of 7</h1>
+  <time datetime=2026-03-19T14:24:34-0700
+	class="post-date">Thu, Mar 19, 2026</time>
+  
+ 
+
+  <ul>
+<li>This is Part 1 of 7 in my series on the book,<a href="https://www.oreilly.com/library/view/feature-engineering-for/9781491953235/">&lsquo;Feature Engineering for Machine Learning&rsquo;</a> *</li>
+</ul>
+<p>It&rsquo;s been a little while since I added some content to my blog but it isn&rsquo;t for lack of learning. After reflecting on what I&rsquo;ve done to get where I am now, I decided it&rsquo;s time to go back through backlog of notes, links, and documents and turn them into proper blog posts. For full disclosure, I did leverage AI in these series of posts to follow, however, all sketches, perspectives, and thoughts are novel; I simply asked my <a href="https://solve.it.com/">SolveIt</a> instance to help me take my 91 page google doc of notes and images and turn them into structured posts.</p>
+<p>That said, the tone of the posts are in line with my writing and all content has been reviewed &amp; edited by me. Lastly, these post would not have been possible were it not for the book club I led while working at Doximity; thanks to all those who contributed:</p>
+<ul>
+<li>Tai Nguyen</li>
+<li>Victor Kofia</li>
+<li>Kevin Studer</li>
+<li>Nana Wu</li>
+<li>Joseph Lin</li>
+<li>Chip Hollingsworth</li>
+<li>And others I may have forgot to mention</li>
+</ul>
+<p>Enjoy the following series and for context, we read this book at the tail end of 2020, so while the content may not be as hot as LLM&rsquo;s, it&rsquo;s great foundational material for machine learning.</p>
+<h1 id="taming-numbers-counts-scaling-and-when-they-matter">Taming Numbers: Counts, Scaling, and When They Matter</h1>
+<hr>
+<p>After working through the first couple chapters of <em>Feature Engineering for Machine Learning</em>, I really wanted to centralize all the subtlties related to how we represent and transform our data before any of it ever sees a model. This post covers some of these foundations: how to deal with counts, when and why to scale your features, and some of the gotchas that nobody warns you about until you&rsquo;ve already shipped something questionable.</p>
+<h2 id="setting-the-stage-scalars-vectors-and-spaces">Setting the Stage: Scalars, Vectors, and Spaces</h2>
+<p>Before diving into transforms, it&rsquo;s worth grounding ourselves in the language we&rsquo;ll be using. Features live in vector spaces, and the way we manipulate those spaces matters.</p>
+<p>In the example below, we&rsquo;re viewing the row and column spaces of our data &amp; features as well as how to represent them geometrically. Something that isn&rsquo;t represented is the NULL space and that can be considered a space where vectors can&rsquo;t reach.</p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-1/01_scalars_vectors_spaces.png" alt="Diagram: Scalars, vectors, and feature spaces overview">
+<em>Overview of scalars, vectors, and the spaces they inhabit.</em></p>
+<p>One thing that tripped me up early on was the relationship between transposing a matrix and taking its inverse. They&rsquo;re <em>not</em> the same thing and you can think of the transpose as flipping a matrix along the diagnol, there is no stretching of vectors occuring, and an inverse as undo-ing a transformation (e.g. unflipping &amp; unstretching). For orthogonal matrices (where all vectors are perpendicular) &amp; orthonormal matrices (where rows and columns are all unit-length and perpendicular to each other), the transpose <em>does</em> equal the inverse. That&rsquo;s a special property, and it comes up more than you&rsquo;d think in dimensionality reduction and decompositions. Worth filing away.</p>
+<h2 id="dealing-with-counts">Dealing with Counts</h2>
+<h3 id="binarization-sometimes-less-is-more">Binarization: Sometimes Less Is More</h3>
+<p>Here&rsquo;s a scenario I&rsquo;ve actually dealt with: you&rsquo;re looking at video play counts for users on a content platform. Sounds straightforward, right? But what if some users have autoplay enabled and a video is just looping on their screen while they&rsquo;ve walked away to make coffee? Suddenly your &ldquo;engagement&rdquo; metric is wildly inflated for certain users.</p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-1/02_binarization_concept.png" alt="Diagram: Binarization transform concept">
+<em>The binarization transform — collapsing counts to binary signals.</em></p>
+<p>Binarization is converting counts to simple 0/1 indicators, is one way to add robustness against this kind of engagment inflating noise. Instead of asking &ldquo;how many times did this user play a video?&rdquo; you ask &ldquo;did this user play a video at all?&rdquo; It&rsquo;s a blunt instrument, sure, but sometimes blunt is exactly what you need.</p>
+<p>The tricky part is knowing <em>when</em> binarization is the right call versus some other transformation. It&rsquo;s more of a gut check and domain intuition than a rigorous statistical test. You could, for instance, compare users <em>without</em> autoplay enabled against a binarized version of everyone&rsquo;s counts and see if your downstream metrics align. But the book doesn&rsquo;t really hand you a formal test for this, it&rsquo;s more about shaping your intuition, which I think is actually the right lesson.</p>
+<h3 id="large-magnitudes-when-your-features-fight-each-other">Large Magnitudes: When Your Features Fight Each Other</h3>
+<p>This section I found interesting from a practical standpoint. Imagine you&rsquo;re fitting a linear model and one feature ranges from 0 to 10 while another ranges from 0 to 1,000,000. Can those large magnitudes actually affect the stability of your coefficient estimates?</p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-1/03_large_magnitudes_problem.png" alt="Diagram: Problems with large magnitude counts">
+<em>Visualizing the problem of large magnitudes in feature space.</em></p>
+<p>The short answer is yes. Large magnitudes can create numerical instability, especially in algorithms that rely on gradient descent or distance calculations. The empty regions of your feature space become vast, and the algorithm struggles to navigate efficiently.</p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-1/04_convergence_issues.png" alt="Diagram: Convergence issues with large magnitudes">
+<em>How large magnitudes can affect convergence.</em></p>
+<p>Now here&rsquo;s the interesting bit: <strong>not all algorithms care equally</strong>. Random forests partition the feature space with splits, so they&rsquo;re largely immune to magnitude issues. But if you&rsquo;re working with an existing model and trying to introduce new features with very different scales, you absolutely need to think about this. Will the new features throw off the balance your model already found?</p>
+<p>This is the kind of thing worth simulating; take your existing feature set, toss in or scale a feature with wildly different magnitude, and see if convergence degrades. It&rsquo;s a small experiment that could save you a lot of headaches.</p>
+<h3 id="quantization-and-binning-the-art-of-discretization">Quantization and Binning: The Art of Discretization</h3>
+<p>Binning is where things get philosophically interesting. You&rsquo;re taking continuous data and chopping it into buckets but <em>how</em> you chop matters a lot.</p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-1/05_quantization_binning.png" alt="Diagram: Quantization and binning approaches">
+<em>Different approaches to binning continuous features.</em></p>
+<p>Take a concrete example: you want to tier users by how many digest emails they read per week. You could do fixed-width bins (0–5, 5–10, 10–15, &hellip;) or quantile-based bins that evenly split your distribution. Quantile binning is arguably more &ldquo;robust&rdquo; because it gives equal weight to all parts of the distribution — but does that always lead to better insights than ad-hoc binning based on human understanding?</p>
+<p>Think about it: if you <em>know</em> that reading 1–2 emails versus 3+ emails represents a meaningful behavioral difference, a quantile split might blur that boundary. Sometimes domain knowledge should override statistical elegance.</p>
+<p>One question that stuck with me: is <code>fixed_width_binning(log(x))</code> with a bin width of 1 the same as <code>power_binning(x)</code> in base 10? It&rsquo;s a fun exercise to prove (or disprove) with a bit of code — and the answer tells you something about the relationship between logarithmic and exponential scales.</p>
+<h2 id="log-transforms-making-the-ugly-beautiful">Log Transforms: Making the Ugly Beautiful</h2>
+<p>Log transforms are the workhorse of feature engineering, and for good reason. When you have right-skewed count data (which is&hellip; most count data), taking the log can pull things into a much more well-behaved distribution.</p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-1/06_log_transform_1.png" alt="Diagram: Q-Q plots and log/Box-Cox transforms">
+<em>Q-Q plot showing how log transforms improve normality. The bottom panel shows the optimal $\lambda$ for the Box-Cox transform, chosen by maximizing the MLE of the parameter.</em></p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-1/07_log_transform_2.png" alt="Diagram: Additional log transform visualization"></p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-1/08_log_transform_3_qqplot.png" alt="Diagram: Box-Cox transform details"></p>
+<p>The Box-Cox transform generalizes this idea. Instead of just taking $\log(x)$, you apply:</p>
+<p>$$\tilde{x} = \begin{cases} \frac{x^\lambda - 1}{\lambda} &amp; \text{if } \lambda \neq 0 \ \ln(x) &amp; \text{if } \lambda = 0 \end{cases}$$</p>
+<p>The optimal $\lambda$ is chosen to make the transformed data as close to normal as possible. When $\lambda = 0$, you recover the plain log transform. It&rsquo;s neat but it also raised a question about what&rsquo;s the statistical test to rigorously <em>measure</em> whether the log transform or the Box-Cox actually made your data &ldquo;more normal&rdquo;? It&rsquo;s worth looking into if you&rsquo;re curious.</p>
+<h2 id="feature-scaling">Feature Scaling</h2>
+<p>Now we get to the heart of the chapter. You&rsquo;ve cleaned up your counts, maybe logged them — but your features are still on wildly different scales. Here&rsquo;s the toolkit.</p>
+<h3 id="min-max-scaling">Min-Max Scaling</h3>
+<p>The simplest approach: squash everything to $[0, 1]$:</p>
+<p>$$\tilde{x} = \frac{x - min(x)}{max(x) - min(x)}$$</p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-1/09_min_max_scaling.png" alt="Diagram: Min-Max scaling">
+<em>Min-Max scaling maps features to the $[0, 1]$ range.</em></p>
+<p>I&rsquo;ve seen a clever variation of this in ad ranking systems. When you have bids for engagements on similar scales but you need to differentiate them because maybe each ad wave represents a higher paid product, you can add a constant to one set of bids to create clean tiers:</p>
+<ul>
+<li>$X + 100$ puts $X$ on the range $[100, 101]$</li>
+<li>$Y$ stays on $[0, 1]$</li>
+</ul>
+<p>This guarantees that $X$-type bids always rank above $Y$-type bids, which may be the business logic you need.</p>
+<p>But the question remains: <strong>what are the cons of putting different scales on a 0–1 span?</strong> Are there numerical edge cases or unforeseen scenarios where this breaks down? Worth thinking about, especially with outliers that can compress the bulk of your data into a tiny portion of the range.</p>
+<h3 id="standardization-z-scores">Standardization (Z-Scores)</h3>
+<p>Center your distribution around zero and scale by standard deviation:</p>
+<p>$$\tilde{x} = \frac{x - \bar{x}}{\hat{\sigma}_{x}}$$</p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-1/10_standardization.png" alt="Diagram: Standardization / z-score scaling">
+<em>Standardization centers the distribution at zero with unit variance.</em></p>
+<p>This is the go-to when you want to put different entities on the same scale for comparison. It preserves the shape of your distribution (unlike min-max, which can be distorted by outliers) and is what most people mean when they say &ldquo;normalize your features&rdquo; in casual conversation.</p>
+<h3 id="l2-normalization">L2 Normalization</h3>
+<p>Project each sample onto the unit circle (or hypersphere):</p>
+<p>$$\tilde{x} = \frac{x}{||x||^2}$$</p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-1/11_l2_normalization.png" alt="Diagram: L2 normalization">
+<em>L2 normalization projects data onto the unit circle.</em></p>
+<p>This is especially useful when the <em>direction</em> (vector orientation) of your feature vector matters more than its magnitude (vector size), think text data, where document length shouldn&rsquo;t dominate the signal&hellip; a document&rsquo;s topic should similar regardless of 10,000 words of 100 words; the words themselves are what matter.</p>
+<h2 id="feature-selection-a-brief-note">Feature Selection: A Brief Note</h2>
+<p>The chapter wraps up with a nod toward feature selection and reducing the number of features to improve model performance and efficiency.</p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-1/12_feature_selection_summary.png" alt="Diagram: Feature selection summary">
+<em>Summary of feature selection considerations.</em></p>
+<p>One thing that bugged me&hellip; the book emphasizes reducing <strong>model scoring time</strong> rather than training time. At first that seems backwards because training is the expensive part, right? But in production, you score <em>way</em> more often than you train. A model that&rsquo;s slightly slower to train but faster to score can save significant compute at scale. It&rsquo;s a production mindset, and I wish the book had expanded more on feature selection techniques beyond this brief mention.</p>
+<h2 id="takeaways">Takeaways</h2>
+<p>The biggest lesson from these first two chapters isn&rsquo;t any single technique, it&rsquo;s that <strong>feature transformations don&rsquo;t add new information</strong>. Scaling, binning, logging; none of these create signal that wasn&rsquo;t there before. What they <em>can</em> do is:</p>
+<ol>
+<li><strong>Remove noise</strong> that obscures the signal (binarization, log transforms)</li>
+<li><strong>Improve numerical stability</strong> so your algorithm can actually converge (scaling)</li>
+<li><strong>Speed up computation</strong> by putting features on comparable scales (normalizing)</li>
+<li><strong>Match the assumptions</strong> of your chosen algorithm (normality, bounded ranges)</li>
+</ol>
+<p>The art is in knowing which transformation serves your specific problem and that requires understanding both the math and the domain. No single recipe works every time.</p>
+<hr>
+<p><em>Next up in Part 2: we&rsquo;ll dive into the world of text features; bag-of-words, n-grams, and the surprisingly deep rabbit hole of turning language into numbers.</em></p>
+
+</div>
+
+<h2>Comments</h2>
+<div id="disqus_thread"></div>
+<script type="application/javascript">
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "spf13" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </main>
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S2N5W95FGS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S2N5W95FGS');
+</script>
+  </body>
+</html>
