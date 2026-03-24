@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Andrew Bibian</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 19 Mar 2026 14:24:34 -0700</lastBuildDate><atom:link href="https://bibsian.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 19 Mar 2026 20:29:14 -0700</lastBuildDate><atom:link href="https://bibsian.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Feature Engineering for Maching Learning - Post 2 of 7</title>
+      <link>https://bibsian.github.io/posts/feature-engineering-2/</link>
+      <pubDate>Thu, 19 Mar 2026 20:29:14 -0700</pubDate>
+      
+      <guid>https://bibsian.github.io/posts/feature-engineering-2/</guid>
+      <description>This is Part 2 of 7 in my series on the book, &amp;lsquo;Feature Engineering for Machine Learning&amp;rsquo; * Text as Features: From Bag-of-Words to Phrase Detection When I first dug into this chapter on text featurization, I kind of wished the author had put the summary at the beginning. I found myself guessing about applicable workflows for a good chunk of the reading; when would I reach for bag-of-words vs.</description>
+    </item>
+    
     <item>
       <title>Feature Engineering for Maching Learning - Post 1 of 7</title>
       <link>https://bibsian.github.io/posts/feature-engineering-1/</link>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.112.0">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Feature Engineering for Maching Learning - Post 2 of 7 &middot; Andrew Bibian</title>
+  <meta name="description" content="" />
+
+  
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/hyde.css">
+  <link type="text/css" rel="stylesheet" href="https://bibsian.github.io/css/all.css">
+  <script defer src="https://bibsian.github.io/js/all.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  <script type="text/x-mathjax-config">
+   MathJax.Hub.Config(
+       {
+           tex2jax: {
+               inlineMath: [["$","$"],["\\(","\\)"]],
+               displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+               processEscapes: false
+           }
+       }
+   )
+  </script>
+  <script type="text/x-mathjax-config">
+   MathJax.Hub.Config({ TeX: { extensions: ["color.js"] }});
+  </script>
+
+  
+  
+</head>
+
+  <body class="theme-base-08 ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://bibsian.github.io/"><h1>Andrew Bibian</h1></a>
+      <p class="lead">
+       This is my notebook for Life ⋂ Data  
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://bibsian.github.io/">Home</a> </li>
+        <li><a href="/posts/first-post/">
+	  
+          <i class="fas fa-male"></i>
+	  
+	  About Me
+	  </a></li><li><a href="https://github.com/bibsian/">
+	  
+	  <i class="fab fa-github"></i>
+	  
+	  Github
+	  </a></li><li><a href="https://www.linkedin.com/in/andrewjamesbibian/">
+	  
+	  <i class="fab fa-linkedin"></i>
+          
+	  LinkedIn
+	  </a></li><li><a href="/static/files/abibian-resume-2026.pdf">
+	  
+          <i class="fas fa-file-pdf"></i>
+	  
+	  Resume
+	  </a></li>
+      </ul>
+    </nav>
+
+    <p>&copy; 2026. All rights reserved. </p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Feature Engineering for Maching Learning - Post 2 of 7</h1>
+  <time datetime=2026-03-19T20:29:14-0700
+	class="post-date">Thu, Mar 19, 2026</time>
+  
+ 
+
+  <ul>
+<li>This is Part 2 of 7 in my series on the book, <a href="https://www.oreilly.com/library/view/feature-engineering-for/9781491953235/">&lsquo;Feature Engineering for Machine Learning&rsquo;</a> *</li>
+</ul>
+<h1 id="text-as-features-from-bag-of-words-to-phrase-detection">Text as Features: From Bag-of-Words to Phrase Detection</h1>
+<hr>
+<p>When I first dug into this chapter on text featurization, I kind of wished the author had put the summary at the beginning. I found myself guessing about applicable workflows for a good chunk of the reading; when would I reach for bag-of-words vs. n-grams vs. something fancier? It wasn&rsquo;t until the end that the full picture clicked. So let me try to save you that suspense and lay things out a bit more intuitively here.</p>
+<p>The core idea of this chapter is deceptively simple: <strong>how do you turn messy, hierarchical, human text into numbers a model can use?</strong> The answer, it turns out, involves a spectrum of techniques that trade off simplicity for richness.</p>
+<h2 id="the-big-tradeoff">The Big Tradeoff</h2>
+<p>The first thing to internalize is text is highly structured and when you turn structured text into a vector of word counts, you lose all of that; hierarchy, parts of speech, dependencies between words are all gone, just like that. What you&rsquo;re left with is a big ole vector of counts or relative frequencies, depedening on what you&rsquo;re doing.</p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-2/01_text_features_intro.png" alt="Intro overview of text feature extraction approaches">
+<em>Overview diagram for text features from the chapter intro</em></p>
+<p>The more I thought about, the more I wondered, is losing all that structure a bad thing? Not necessarily. It depends entirely on your task. But it&rsquo;s important to understand what you&rsquo;re giving up when you featurize text, because that awareness shapes every decision downstream.</p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-2/02_bag_of_x_flat_vectors.png" alt="Bag-of-X: turning text into flat vectors">
+<em>Text to vectors and their utilities</em></p>
+<p>And while a lot of the methods presented in this chapter transform away some, if not all, structure, know there exists other transformations that can maintain higher levels of structure such as semantics. The famous &ldquo;king - man + woman = queen&rdquo; magic embodies that text representation where similarity of vectors can surface much more relevant information but deriving that perspecitve is much more computationally complex than basic counts and frequencies. So is it worth it? It all depends on what you&rsquo;re trying to do.</p>
+<p>In the rest of the post we&rsquo;ll go over the various methods for featurizing text, starting with the simplest and getting progressively more complex. And we&rsquo;ll round it out with a summary of how to combat one of the main issues with text featurization; sparsity, the larger your data, the sparser your feature space&hellip; unless you implement some mitigation techniques as we&rsquo;ll describe later on.</p>
+<h2 id="bag-of-words">Bag-of-Words</h2>
+<p>Bag-of-words (BOW) is the simplest approach: tokenize your text, count up each word, and you&rsquo;ve got a feature vector. Each unique word in your vocabulary becomes a dimension, and the value is how many times that word appeared in the document.</p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-2/03_bag_of_words_1.png" alt="Bag-of-words representation diagram">
+<img src="/posts/imgs/feature-eng/feature-eng-2/04_bag_of_words_2.png" alt="Bag-of-words matrix example">
+<em>BOW Example, Pros, &amp; Cons</em></p>
+<p>What excited me about this is featurization technique is how operationally straightforward it is. I&rsquo;m pretty sure raw counts of each word in text documents could be handled natively in the warehouse for large corpuses. Imagine using a UDF that tokenizes and counts words across millions of user comments while tokenizing only for a specific set of negative/positive words; that&rsquo;d be a pretty cheap an easy feature to identify comments worth flagging for review. Just think, a SQL-native approach could be a game changer for teams that don&rsquo;t want to spin up a separate NLP pipeline just to get basic text features into their models.</p>
+<h2 id="bag-of-n-grams">Bag-of-n-Grams</h2>
+<p>The natural extension of BOW is to count not just individual words, but sequences of $n$ words (n-grams). Bigrams capture two-word phrases like &ldquo;machine learning&rdquo; or &ldquo;not good&rdquo; and that second example is exactly why n-grams can matter more than just BOW. Think about it, BOW treats &ldquo;not&rdquo; and &ldquo;good&rdquo; as independent signals; a bigram model understands &ldquo;not good&rdquo; as its own singular dimension.</p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-2/05_bag_of_ngrams.png" alt="N-grams representation diagram">
+<em>Diagram showing n-gram construction</em></p>
+<p>Again, I found myself wondering: how easy would this be to implement in our data warehouse? The sliding window logic for generating n-grams from tokenized text isn&rsquo;t complex, but doing it at warehouse scale with large compute and efficient storage is where it gets interesting. Perhaps some NLP pipelines could be really simplified if we&rsquo;re aiming for blunt features&hellip; but again, we have to be careful here because with higher n-grams comes sparse matricies so dealing with that sparsity is going to be very important for downstream usecases.</p>
+<h2 id="filtering-for-cleaner-features">Filtering for Cleaner Features</h2>
+<p>As you can imagine, raw counts of words in bodies of text are noisy. Cleaning up that noise to get better signal from your text features can be done in a variety of ways. There&rsquo;s the basic filter of course. For example, when we parse text, let&rsquo;s just throw out words for anything that doesn&rsquo;t have meaning downstream. If I&rsquo;m trying to create features to cluster users by interest and I&rsquo;m creating a &ldquo;surfer&rdquo; category from comments, or articles read, there are only so many words I&rsquo;d consider a strong signal of this, all other words probably won&rsquo;t help me there.</p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-2/06_filtering_overview.png" alt="Overview of filtering techniques for text features"></p>
+<h3 id="stopwords">Stopwords</h3>
+<p>Stopwords like &ldquo;the&rdquo;, &ldquo;is&rdquo;, &ldquo;and&rdquo;, etc. tend to dominate word counts but carry little discriminative information. Removing them is a standard first step in boosting the level of useful information representated by your features.</p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-2/07_stopwords.png" alt="Stopwords removal diagram"></p>
+<p>One thought I had here: <strong>how similar are the stopword lists across different domains?</strong> The stopwords for advertisements, journal articles, and user comments are probably pretty similar at the core, but each domain likely has its own &ldquo;functional&rdquo; words that carry no signal. It could be nice to have a centralized, open source, curated, &ldquo;domain specific&rdquo;, stopword list available as part of a text parsing toolchain; one less thing you&rsquo;d have to think about if there were general consensus around it.</p>
+<h3 id="frequency-based-filtering">Frequency-Based Filtering</h3>
+<p>Beyond stopwords, you can filter by frequency more generally. Words that appear in nearly every document (too common) or in only one document (too rare) probably aren&rsquo;t helping your model.</p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-2/08_frequency_filtering_1.png" alt="Frequency-based filtering approach">
+<img src="/posts/imgs/feature-eng/feature-eng-2/09_frequency_filtering_2.png" alt="Frequency filtering — rare word removal">
+<img src="/posts/imgs/feature-eng/feature-eng-2/10_frequency_filtering_3.png" alt="Frequency filtering — common word removal">
+<img src="/posts/imgs/feature-eng/feature-eng-2/11_frequency_filtering_4.png" alt="Frequency filtering — combined effect on feature space">
+<em>Frequency filtering notes</em></p>
+<p>One neat idea that came up: the <strong>GARBAGE token</strong>. After you&rsquo;ve filtered out stopwords and rare/common words, if you still have a large count of tokens landing in a catch-all &ldquo;garbage&rdquo; bucket, that&rsquo;s actually a useful diagnostic signal. It tells you to go back and look at the source documents — maybe there&rsquo;s a pattern in the noise you&rsquo;re missing, or your tokenization needs refinement.</p>
+<h3 id="stemming">Stemming</h3>
+<p>Stemming reduces words to their root form — &ldquo;running&rdquo;, &ldquo;runs&rdquo;, &ldquo;ran&rdquo; all become &ldquo;run&rdquo;. This collapses your feature space and groups semantically similar words together.</p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-2/12_stemming.png" alt="Stemming example and its effect on vocabulary">
+<em>Stemming diagram</em></p>
+<p>The tradeoff is that stemming can be aggressive and sometimes groups words that shouldn&rsquo;t be grouped. But for reducing sparsity in your feature matrix, it&rsquo;s a solid tool.</p>
+<h2 id="from-words-to-n-grams-to-phrases">From Words to n-Grams to Phrases</h2>
+<p>There&rsquo;s a natural progression from individual words → n-grams → meaningful phrases. The question is: at what point does the added complexity pay off?</p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-2/13_words_to_phrases.png" alt="Progression from words to n-grams to phrases">
+<em>Words to phrases progression diagram</em></p>
+<p>For many practical tasks (document classification, spam detection), BOW or bigrams are surprisingly competitive. But when you need to capture richer meaning,like understanding whether an ad headline is appealing to users, you&rsquo;ll start wanting phrases and more structural features.</p>
+<p>This connects directly to something I&rsquo;ve seen in practice: teams experimenting with manipulating text headlines to get more user engagement. If you&rsquo;re trying to understand <em>what makes a headline click-worthy</em>, simple word counts won&rsquo;t cut it. You need to capture semantics as the specific <em>phrasing</em> matters, not just which words appear.</p>
+<h2 id="parsing-and-tokenization">Parsing and Tokenization</h2>
+<p>Before we dive further on meaning phrases, you should familarize yourself with the differences between tokenization &amp; parsing. Tokenziation is the process for breaking down text into words (or &ldquo;tokens&rdquo;) and parsing, is the process of analyzing word structure &amp; grammer. When parsing text you can begin to leverage more complex structure such as parts of speech (POS), grammer, etc. This is where tools like SpaCy shine. Their tokenizers are highly extensible, letting you build in custom delimiters and rules for your specific domain.</p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-2/14_parsing_tokenization.png" alt="Parsing and tokenization pipeline diagram">
+<em>Parsing/tokenization diagram</em></p>
+<h2 id="collocation-extraction-for-phrase-detection">Collocation Extraction for Phrase Detection</h2>
+<p>Collocations are word pairs (or groups) that co-occur more often than chance would predict. &ldquo;New York&rdquo;, &ldquo;machine learning&rdquo;, &ldquo;ice cream&rdquo; — these are phrases where the individual words lose meaning if separated.</p>
+<p>The statistical machinery behind collocation detection is fascinating. You&rsquo;re essentially running hypothesis tests to determine whether two words appear together significantly more than their individual frequencies would suggest.</p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-2/15_collocation_1.png" alt="Collocation extraction method overview">
+<img src="/posts/imgs/feature-eng/feature-eng-2/16_collocation_2.png" alt="Collocation scoring and ranking">
+<em>Collocation Notes</em></p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-2/17_collocation_3.png" alt="Collocation statistical tests — PMI and chi-squared approaches">
+<img src="/posts/imgs/feature-eng/feature-eng-2/18_collocation_4.png" alt="Collocation hypothesis testing framework">
+<img src="/posts/imgs/feature-eng/feature-eng-2/19_collocation_5.png" alt="Collocation detection results and phrase candidates">
+<em>Collocation &amp; Likelihood Ratios</em></p>
+<p>I&rsquo;ll be honest, I wanted more packages and tooling around collocation usage. The theory is well-established, but finding production-ready implementations that integrate cleanly into a feature pipeline took more digging than I expected.</p>
+<h2 id="chunking--part-of-speech-tagging">Chunking &amp; Part-of-Speech Tagging</h2>
+<p>At the richest end of the spectrum, you can extract parts of speech (nouns, verbs, adjectives) and syntactic chunks from text. This preserves some of the hierarchical structure that count vectors throw away.</p>
+<p><img src="/posts/imgs/feature-eng/feature-eng-2/20_pos_tagging.png" alt="Part-of-speech tagging and chunking diagram">
+<em>POS tagging Notes</em></p>
+<p>My take: POS tagging and entity extraction seem most valuable for <strong>specific, targeted tasks</strong> rather than general-purpose featurization. If you&rsquo;re building a model to extract structured data from unstructured text (like pulling company names from job descriptions), POS tagging is invaluable. For broad classification tasks, the simpler methods usually win on the cost-benefit curve.</p>
+<h2 id="fighting-sparsity-the-recurring-theme">Fighting Sparsity: The Recurring Theme</h2>
+<p>If there&rsquo;s one thread running through this entire chapter, it&rsquo;s <strong>data sparsity</strong>. Text naturally produces extremely sparse feature matrices as most documents use only a tiny fraction of the total vocabulary in your corpus. Here are strategies for dealing with this that we&rsquo;re covered:</p>
+<ul>
+<li><strong>Filtering stopwords</strong> to remove low-signal dimensions</li>
+<li><strong>Frequency-based filtering</strong> to prune rare and ubiquitous terms</li>
+<li><strong>Stemming</strong> to collapse related words</li>
+<li><strong>Binning with parts of speech</strong> - count all nouns, all adjectives, etc. as aggregate features</li>
+<li><strong>Dimensionality reduction</strong> techniques (covered in a later chapter)</li>
+<li><strong>Oversampling</strong> — create bigrams from your text, treat the set of all bigrams as a population, and bootstrap sample from it</li>
+</ul>
+<p>Each of these has tradeoffs, and the right combination depends on your data and task.</p>
+<h2 id="summary">Summary</h2>
+<p><img src="/posts/imgs/feature-eng/feature-eng-2/21_chapter_summary.png" alt="Chapter summary of text featurization techniques"></p>
+<p>The progression in this chapter is clean: <strong>words → counts → filtered counts → n-grams → phrases → syntax</strong>. Each step adds richness but also complexity. For most practical applications, you&rsquo;ll find that BOW or n-grams with good filtering gets you surprisingly far. The fancier techniques (collocations, POS tagging) are there when you need them, but they&rsquo;re not always worth the overhead. Lastly, embeddings and sematics are the richest representation of all but they didn&rsquo;t get that much coverage in this chapter.</p>
+<p>The biggest insight for me was how much of text featurization is really about <strong>managing sparsity</strong> and that the simplest tools (stopword removal, frequency filtering, stemming) often have the highest ROI.</p>
+<hr>
+<h3 id="references">References</h3>
+<ul>
+<li><a href="https://nlp.stanford.edu/software/dependencies_manual.pdf">Dependency Parsing Abbreviations (Stanford NLP)</a></li>
+<li><a href="https://spacy.io/usage/linguistic-features/#pos-tagging">spaCy POS Tagging</a></li>
+<li><a href="http://jalammar.github.io/illustrated-word2vec/">The Illustrated Word2Vec</a> — excellent visual guide to embeddings</li>
+<li><a href="https://nlp.stanford.edu/fsnlp/promo/colloc.pdf">Collocation Hypothesis Testing (Stanford NLP)</a></li>
+</ul>
+<p><em>Next up in Part 3: we&rsquo;ll start leveraging text for classification task.</em></p>
+
+</div>
+
+<h2>Comments</h2>
+<div id="disqus_thread"></div>
+<script type="application/javascript">
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "spf13" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </main>
+
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S2N5W95FGS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-S2N5W95FGS');
+</script>
+  </body>
+</html>
